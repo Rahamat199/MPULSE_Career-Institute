@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPULSE Career Institute - Your Path to Success</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        .logo-text-combo {
+    display: flex;
+    align-items: center;
+    position: relative; /* Added for absolute positioning */
+}
+
+.logo-image {
+    height: 38px;
+    margin-right: -4px; /* Increased negative margin */
+    margin-left: -30px;
+    position: relative; /* For z-index to work */
+    z-index: 1; /* Ensure logo stays above */
+}
+
+.brand-text {
+    font-weight: 600;
+    font-size: 1.5rem;
+    white-space: nowrap;
+    letter-spacing: -0.5px;
+    position: relative;
+    margin-left: -35px;
+    margin-top: 10px; /* Pull text from left side too */
+}
+    /* WhatsApp Floating Button */
+    .whatsapp-float {
+        position: fixed;
+        bottom: 60px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background-color: #25D366;
+        color: #FFF;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 30px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .whatsapp-float:hover {
+        background-color: #128C7E;
+        transform: scale(1.1);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .whatsapp-float i {
+        margin-top: 2px;
+    }
+
+
+        .hero-section {
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            z-index: -1;
+        }
+
+        .hero-bg.active {
+            opacity: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+/*             background: rgba(44, 62, 80, 0.7); */
+            z-index: 0;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--secondary-color);
+        }
+
+        .program-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .program-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #c0392b;
+            border-color: #c0392b;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 30px 0;
+        }
+
+        .testimonial-card {
+            background-color: var(--light-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* About Section Styles */
+        .about-section {
+            padding: 80px 0;
+            background-color: #f8f9fa;
+        }
+
+        .director-image {
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            height: auto;
+        }
+
+        .director-message {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .director-message h2 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .director-message h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+
+        .director-signature {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 24px;
+            color: var(--secondary-color);
+            margin-top: 30px;
+        }
+
+        /* Admission Form Styles */
+        .required-field::after {
+            content: '*';
+            color: #e78038;
+            margin-left: 4px;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+
+        .form-section-title {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .admission-form-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+                .is-invalid {
+    border-color: #dc3545 !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+/* Loading Spinner */
+.spinner-border {
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+    </style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "MPULSE Career Institute",
+  "url": "https://mpulse.org.in",
+  "logo": "https://mpulse.org.in/logo.jpg",
+  "sameAs": [
+    "https://www.instagram.com/mpulse_career_institute25/"
+  ]
+}
+</script>
+</head>
+
+<body>
+    <!-- Navigation -->
+   <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <div class="logo-text-combo">
+                <img src="logo.png" alt="M Logo" height="38" class="logo-image">
+                <span class="brand-text"><span style="color: #3cb3ad;">PULSE</span> CAREER INSTITUTE</span>
+            </div>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#programs">Programs</a></li>
+                <li class="nav-item"><a class="nav-link" href="#why-us">Why Us</a></li>
+                <li class="nav-item"><a class="nav-link" href="#scholarships">Scholarships</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+            </ul>
+            <a href="#admission" class="btn btn-danger ms-3">Apply Now</a>
+            <a href="login.html" class="btn btn-danger ms-3">Login</a>
+        </div>
+    </div>
+</nav>
+
+    <!-- Hero Section with Auto-scrolling Backgrounds -->
+    <section id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <!-- Background images that will cycle -->
+        <div class="hero-bg active" style="background-image: url('Hero/img1.jpg');"></div>
+        <div class="hero-bg" style="background-image: url('Hero/img2.jpg');"></div>
+        <!-- <div class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div> -->
+
+        <div class="container hero-content" style="margin-top: 20%;">
+<!--             <h1 class="display-3 fw-bold mb-4">A Step Towards Your Dream Career</h1>
+            <p class="lead mb-5">Begin your journey to success with MPULSE Career Institute</p> -->
+            <div class="d-flex justify-content-center gap-3">
+                <a href="#programs" class="btn btn-light btn-lg px-4">Explore Programs</a>
+                <a href="#gallery" class="btn btn-light btn-lg px-4">Gallery</a>
+                <a href="#contact" class="btn btn-light btn-lg px-4">Contact Us</a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-5 mb-4 mb-lg-0">
+                    <img src="Director/img1.jpg" alt="Director of MPULSE Career Institute" class="director-image">
+                </div>
+                <div class="col-lg-7">
+                    <div class="director-message">
+                        <h2>Director's Message</h2>
+                        <p class="lead">Dear Students and Parents,</p>
+                        <p>Welcome to MPULSE Career Institute — where aspirations are nurtured, and futures are built.
+                        </p>
+                        <p>In today's competitive world, success in exams like NEET and JEE requires not just hard work,
+                            but the right guidance, strategy, and support. At MPULSE, our approach combines academic
+                            rigor with personalized mentoring to help each student realize their full potential.</p>
+                        <p>We understand that every student is unique, and so is their learning journey. That's why our
+                            programs are carefully designed to be student-centric, stress-free, and result-oriented. Our
+                            dedicated faculty, innovative teaching methods, and continuous assessment help build a
+                            strong foundation and boost confidence.</p>
+                        <p>At MPULSE, we are not only committed to academic success but also to shaping responsible,
+                            focused, and self-reliant individuals. We believe in empowering students — not just for
+                            exams, but for life.</p>
+                        <p>Let's work together to turn dreams into achievements.</p>
+                        <p class="director-signature">With best wishes,<br>RAHAMATHULLA<br>Director, MPULSE Career Institute
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Programs Section -->
+    <section id="programs" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Our Programs</h2>
+                <p class="lead">Comprehensive courses designed for your success</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="program-card card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-user-md feature-icon"></i>
+                            <h4 class="card-title">MEDICAL (NEET-UG)</h4>
+                            <ul class="text-start ps-4">
+                                <li>CLASS 11th & 12th PUC</li>
+                                <li>CLASS (6th TO 10th) FOUNDATION</li>
+                                <li>K-CET (ENTRANCE EXAMS)</li>
+                                <li>EVENING TUTIONS 6-12th CLASS</li>
+                            </ul>
+                            <a href="medical.html" class="btn btn-primary mt-3">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="program-card card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-atom feature-icon"></i>
+                            <h4 class="card-title">IIT-JEE</h4>
+                            <ul class="text-start ps-4">
+                                <li>JEE Main & Advanced Coaching</li>
+                                <li>Class 11th & 12th Integrated</li>
+                                <li>Foundation for Class 9-10</li>
+                                <li>Regular Mock Tests & Analysis</li>
+                                <li>Doubt Clearing Sessions</li>
+                            </ul>
+                            <a href="IIT-JEE.html" class="btn btn-primary mt-3">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="program-card card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-trophy feature-icon"></i>
+                            <h4 class="card-title">Competitive Exams</h4>
+                            <p>Comprehensive coaching for various competitive exams with expert guidance and regular
+                                mock tests.</p>
+                            <a href="competitive.html" class="btn btn-primary mt-3">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="program-card card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-book feature-icon"></i>
+                            <h4 class="card-title">Tuition Classes</h4>
+                            <ul class="text-start ps-4">
+                                <li>For BOARDS | CBSE | ICSE STUDENTS</li>
+                                <li>Result Oriented Integration Education</li>
+                                <li>Doubt Removal Counters</li>
+                                <li>Performance Analysis & Feedback</li>
+                            </ul>
+                            <a href="tuition.html" class="btn btn-primary mt-3">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Why Choose Us Section -->
+    <section id="why-us" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Why Choose MPULSE?</h2>
+                <p class="lead">We provide the perfect environment for your academic success</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chalkboard-teacher feature-icon"></i>
+                            <h4 class="card-title">Expert Faculty</h4>
+                            <p class="card-text">Highly qualified teachers with years of experience in guiding students
+                                to success.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-book-open feature-icon"></i>
+                            <h4 class="card-title">Comprehensive Study Material</h4>
+                            <p class="card-text">Well-structured notes, practice sets & e-books curated by our expert
+                                faculty.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-clipboard-check feature-icon"></i>
+                            <h4 class="card-title">Regular Tests & Analysis</h4>
+                            <p class="card-text">Weekly mock tests with detailed performance evaluation to track your
+                                progress.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-user-graduate feature-icon"></i>
+                            <h4 class="card-title">Personalized Mentorship</h4>
+                            <p class="card-text">Doubt-solving sessions and one-on-one guidance from experienced
+                                mentors.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-laptop feature-icon"></i>
+                            <h4 class="card-title">Smart Classrooms</h4>
+                            <p class="card-text">Technology-enabled learning for better understanding and engagement.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-rupee-sign feature-icon"></i>
+                            <h4 class="card-title">Affordable Fees</h4>
+                            <p class="card-text">Quality education at a reasonable price with flexible payment options.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scholarship Section -->
+    <section id="scholarships" class="py-5 bg-danger text-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="fw-bold display-5">Scholarship Programs</h2>
+                    <p class="lead">Attractive discounts for meritorious students*</p>
+                    <p>We offer scholarships up to 90% based on previous JEE/NEET results to help deserving students
+                        achieve their dreams.</p>
+                    <ul class="mb-4">
+                        <li>Scholarships based on academic performance</li>
+                        <li>Special discounts for early admissions</li>
+                        <li>Financial assistance for economically weaker students</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-light btn-lg">Apply for Scholarship</a>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://plus.unsplash.com/premium_photo-1682098120982-6d2bb64f64a8?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                        alt="Scholarship" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Admission Section -->
+<section id="admission" class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">ADMISSION OPEN (2025-2026)</h2>
+            <p class="lead">Begin your journey to success with us</p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="admission-form-container">
+                    <h3 class="text-center mb-4" style="color: var(--secondary-color);">Admission Form</h3>
+                    <form id="admissionForm" action="https://formsubmit.co/mpulseinstitutions@gmail.com" method="POST">
+                        <!-- FormSubmit Configuration -->
+                        <input type="hidden" name="_subject" value="New Admission Form Submission - MPULSE">
+                        <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="_next" value="https://mpulse.org.in/thank-you.html">
+                        <input type="hidden" name="_captcha" value="false">
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label for="studentName" class="form-label required-field">Student Name</label>
+                                <input type="text" class="form-control" id="studentName" name="Student Name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="fatherName" class="form-label required-field">Father's Name</label>
+                                <input type="text" class="form-control" id="fatherName" name="Father's Name" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label required-field">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="Email" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="whatsappNumber" class="form-label required-field">WhatsApp Number</label>
+                                <input type="tel" class="form-control" id="whatsappNumber" name="WhatsApp Number" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label for="examPreparingFor" class="form-label required-field">Preparing For</label>
+                                <select class="form-select" id="examPreparingFor" name="Preparing For" required>
+                                    <option value="">Select Exam</option>
+                                    <option value="NEET">NEET</option>
+                                    <option value="JEE">JEE</option>
+                                    <option value="Both">Both NEET & JEE</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="admissionClass" class="form-label required-field">Current Class</label>
+                                <select class="form-select" id="admissionClass" name="Current Class" required>
+                                    <option value="">Select Class</option>
+                                    <option value="6th">6th</option>
+                                    <option value="7th">7th</option>
+                                    <option value="8th">8th</option>
+                                    <option value="9th">9th</option>
+                                    <option value="10th">10th</option>
+                                    <option value="11th">11th</option>
+                                    <option value="12th">12th</option>
+                                    <option value="Dropper">Dropper</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label for="parentContact" class="form-label required-field">Parent Contact Number</label>
+                                <input type="tel" class="form-control" id="parentContact" name="Parent Contact" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="previousSchool" class="form-label required-field">Previous School/College</label>
+                                <input type="text" class="form-control" id="previousSchool" name="Previous School" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label for="marks" class="form-label required-field">% in Previous Class</label>
+                                <input type="number" class="form-control" id="marks" name="Previous Class %" min="0" max="100" step="0.01" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="source" class="form-label required-field">How did you hear about us?</label>
+                                <select class="form-select" id="source" name="Source" required>
+                                    <option value="">Select Source</option>
+                                    <option value="Social Media">Social Media</option>
+                                    <option value="Friends/Family">Friends/Family</option>
+                                    <option value="Newspaper">Newspaper</option>
+                                    <option value="Hoarding">Hoarding</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-danger btn-lg px-5">Submit Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    <!-- Gallery-->
+    <section id="gallery" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Our Gallery</h2>
+                <p class="lead">Glimpses of life at MPULSE Career Institute</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <img src="Gallery/img1.jpg"
+                        alt="Classroom" class="img-fluid rounded shadow">
+                </div>
+                <div class="col-md-4 mb-4">
+                    <img src="Gallery/img2.jpg"
+                        alt="Students" class="img-fluid rounded shadow">
+                </div>
+                <div class="col-md-4 mb-4">
+                    <img src="Gallery/img3.jpg"
+                        alt="Lab" class="img-fluid rounded shadow">
+                </div>
+                <div class="col-md-4 mb-4">
+                    <img src="Gallery/img4.jpg"
+                        alt="Event" class="img-fluid rounded shadow">
+                </div>
+                <div class="col-md-4 mb-4">
+                    <img src="Gallery/img5.jpg"
+                        alt="Library" class="img-fluid rounded shadow">
+                </div>
+                <div class="col-md-4 mb-4">
+                    <img src="Gallery/img6.jpg"
+                        alt="Award" class="img-fluid rounded shadow">
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <a href="#" class="btn btn-primary">View More</a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Testimonials Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">What Our Students Say</h2>
+                <p class="lead">Success stories from our alumni</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://images.unsplash.com/photo-1653379671027-bd1be50c4ad1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGluZGlhbiUyMFN0dWRlbnQlMjBpbWFnZXxlbnwwfHwwfHx8MA%3D%3D"
+                                alt="Priya Sharma - NEET Topper" class="rounded-circle me-3" width="60" height="60">
+                            <div>
+                                <h5 class="mb-0">Priya Sharma</h5>
+                                <p class="text-muted mb-0">NEET Rank 145</p>
+                            </div>
+                        </div>
+                        <p>"MPULSE's NEET coaching transformed my preparation. The faculty's deep subject knowledge and
+                            regular mock tests helped me crack NEET in my first attempt!"</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://images.unsplash.com/photo-1665999719798-49a27ca9c97b?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                alt="Rahul Verma - JEE Advanced" class="rounded-circle me-3" width="60" height="60">
+                            <div>
+                                <h5 class="mb-0">Rahul Verma</h5>
+                                <p class="text-muted mb-0">JEE Advanced AIR 78</p>
+                            </div>
+                        </div>
+                        <p>"The problem-solving techniques I learned at MPULSE were game-changers. Their JEE Advanced
+                            crash course helped me secure admission at IIT Bombay."</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://plus.unsplash.com/premium_photo-1682089897177-4dbc85aa672f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NzN8fGluZGlhbiUyMFN0dWRlbnQlMjBpbWFnZXxlbnwwfHwwfHx8MA%3D%3D"
+                                alt="Ananya Patel - CBSE Topper" class="rounded-circle me-3" width="60" height="60">
+                            <div>
+                                <h5 class="mb-0">Ananya Patel</h5>
+                                <p class="text-muted mb-0">CBSE 12th - 98.4%</p>
+                            </div>
+                        </div>
+                        <p>"MPULSE's integrated coaching helped me score 100/100 in Physics and Chemistry while
+                            simultaneously preparing for competitive exams."</p>
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    <!-- Contact Section -->
+<!-- Contact Section -->
+<section id="contact" class="py-5 bg-dark text-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Contact Us</h2>
+            <p class="lead">Get in touch with our team</p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-lg-5 mb-4 mb-lg-0">
+                                <h3 class="mb-4">Our Information</h3>
+                                <div class="mb-4">
+                                    <h5><i class="fas fa-map-marker-alt me-2"></i> Address</h5>
+                                    <p>31, 3rd Cross Rd, beside Navachethana Hospital, RWF West Colony, Yelahanka New Town,
+                                        Bengaluru, Karnataka 560063</p>
+                                </div>
+                                <div class="mb-4">
+                                    <h5><i class="fas fa-phone me-2"></i> Phone</h5>
+                                    <p>+91 9164428448 or +91 9964476659</p>
+                                </div>
+                                <div class="mb-4">
+                                    <h5><i class="fas fa-envelope me-2"></i> Email</h5>
+                                    <p>mpulseinstitutions@gmail.com</p>
+                                </div>
+                                <div class="mb-4">
+                                    <h5><i class="fas fa-clock me-2"></i> Working Hours</h5>
+                                    <p>Monday - Saturday: 8:00 AM - 8:00 PM</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-7">
+                                <h3 class="mb-4">Send Us a Message</h3>
+                                <form id="contactForm" action="https://formsubmit.co/mpulseinstitutions@gmail.com" method="POST">
+                                    <!-- FormSubmit Configuration -->
+                                    <input type="hidden" name="_subject" value="New Contact Form Submission - MPULSE">
+                                    <input type="hidden" name="_template" value="table">
+                                    <input type="hidden" name="_next" value="https://mpulse.org.in/thank-you.html">
+                                    <input type="hidden" name="_captcha" value="false">
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="contactName" class="form-label required-field">Name</label>
+                                            <input type="text" class="form-control" id="contactName" name="Name" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="contactEmail" class="form-label required-field">Email</label>
+                                            <input type="email" class="form-control" id="contactEmail" name="Email" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="contactPhone" class="form-label required-field">Phone Number</label>
+                                        <input type="tel" class="form-control" id="contactPhone" name="Phone" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="contactSubject" class="form-label required-field">Subject</label>
+                                        <select class="form-select" id="contactSubject" name="Subject" required>
+                                            <option value="">Select Subject</option>
+                                            <option value="Admission Inquiry">Admission Inquiry</option>
+                                            <option value="Course Information">Course Information</option>
+                                            <option value="Fee Structure">Fee Structure</option>
+                                            <option value="Scholarship">Scholarship</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="contactMessage" class="form-label required-field">Message</label>
+                                        <textarea class="form-control" id="contactMessage" name="Message" rows="4" required></textarea>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-danger btn-lg px-5">Send Message</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+    <!-- Map Section -->
+    <div class="map-container">
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3885.9312881672377!2d77.5835639!3d13.103539400000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae188abe4f3cb1%3A0x78ff63839016cdc7!2s31%2C%203rd%20Cross%20Rd%2C%20beside%20Navachethan%20Hospital%2C%20RWF%20West%20Colony%2C%20Yelahanka%20New%20Town%2C%20Bengaluru%2C%20Karnataka%20560063!5e0!3m2!1sen!2sin!4v1746096948393!5m2!1sen!2sin"
+            width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h4>MPULSE CAREER INSTITUTE</h4>
+                    <p>A Step Towards Your Dream Career</p>
+                    <div class="social-icons">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/mpulse_career_institute25/?utm_source=qr&igsh=MXNwZ2kydG1uejJmaQ%3D%3D#"
+                            class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-4 mb-md-0">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#home" class="text-white">Home</a></li>
+                        <li><a href="#programs" class="text-white">Programs</a></li>
+                        <li><a href="#why-us" class="text-white">Why Us</a></li>
+                        <li><a href="#scholarships" class="text-white">Scholarships</a></li>
+                        <li><a href="#admission" class="text-white">Admission</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h5>Programs</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="medical.html" class="text-white">Medical (NEET-UG)</a></li>
+                        <li><a href="competitive.html" class="text-white">Competitive Exams</a></li>
+                        <li><a href="tuition.html" class="text-white">Tuition Classes</a></li>
+                        <li><a href="foundation.html" class="text-white">Foundation Classes</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Contact Info</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> Bengaluru, Karnataka</li>
+                        <li><i class="fas fa-phone me-2"></i> +91 9164428448 or +91 9964476659</li>
+                        <li><i class="fas fa-envelope me-2"></i> mpulseinstitutions@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-light">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 MPULSE Career Institute. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Button -->
+<a href="https://wa.me/919164428448?text=Hello%20MPULSE%20Career%20Institute,%20I%20have%20a%20question%20about%20your%20courses." 
+   class="whatsapp-float" 
+   target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ===== HERO IMAGE CYCLING =====
+    const heroBackgrounds = document.querySelectorAll('.hero-bg');
+    if (heroBackgrounds.length > 0) {
+        let currentBg = 0;
+        heroBackgrounds[0].classList.add('active');
+        
+        setInterval(() => {
+            heroBackgrounds.forEach(bg => bg.classList.remove('active'));
+            currentBg = (currentBg + 1) % heroBackgrounds.length;
+            heroBackgrounds[currentBg].classList.add('active');
+        }, 5000);
+    }
+
+    // ===== FORM SUBMISSION =====
+    const admissionForm = document.getElementById('admissionForm');
+    if (admissionForm) {
+        admissionForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            const requiredFields = this.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                }
+            });
+            
+            // Validate email format
+            const emailField = this.querySelector('[type="email"]');
+            if (emailField && !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailField.value)) {
+                emailField.classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                alert('Please fill all required fields correctly');
+                return;
+            }
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            try {
+                // Show loading state
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
+                submitBtn.disabled = true;
+                
+                // Submit form
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    body: new FormData(this)
+                });
+                
+                // Show success message
+                alert('Thank you! Your application has been submitted successfully.\nWe will contact you shortly.');
+                this.reset();
+                
+                // Redirect if _next is set
+                const nextUrl = this.querySelector('[name="_next"]')?.value;
+                if (nextUrl) window.location.href = nextUrl;
+                
+            } catch (error) {
+                console.log('Form submission logged:', error);
+                alert('Thank you! Your information has been received.');
+                this.reset();
+            } finally {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Clear validation on input
+        admissionForm.querySelectorAll('input, select, textarea').forEach(element => {
+            element.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        });
+    }
+
+    // ===== SMOOTH SCROLLING =====
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            e.preventDefault();
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                // Close mobile menu if open
+                const navbarToggler = document.querySelector('.navbar-toggler');
+                const navbarCollapse = document.querySelector('.navbar-collapse');
+                if (navbarToggler && !navbarToggler.classList.contains('collapsed')) {
+                    new bootstrap.Collapse(navbarCollapse).hide();
+                }
+                
+                // Smooth scroll to target
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+                
+                // Update URL
+                history.pushState(null, null, targetId);
+            }
+        });
+    });
+
+    // ===== WHATSAPP BUTTON =====
+    const whatsappBtn = document.querySelector('.whatsapp-float');
+    if (whatsappBtn) {
+        whatsappBtn.addEventListener('click', function() {
+            // Track WhatsApp clicks if needed
+            console.log('WhatsApp inquiry initiated');
+        });
+    }
+});
+
+// ===== FORM FIELD DEPENDENCIES =====
+// Show NEET/JEE specific fields when class is 11th/12th
+function setupExamSpecificFields() {
+    const classSelect = document.getElementById('admissionClass');
+    const examField = document.getElementById('examPreparingFor');
+    
+    if (classSelect && examField) {
+        classSelect.addEventListener('change', function() {
+            if (this.value === '11th' || this.value === '12th' || this.value === 'Dropper') {
+                examField.closest('.mb-3').style.display = 'block';
+            } else {
+                examField.closest('.mb-3').style.display = 'none';
+            }
+        });
+        
+        // Trigger change event on load
+        classSelect.dispatchEvent(new Event('change'));
+    }
+}
+
+// Initialize on DOM load
+document.addEventListener('DOMContentLoaded', setupExamSpecificFields);
+
+// Contact Form Submission Handler
+document.getElementById('contactForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Validate form
+    const requiredFields = this.querySelectorAll('[required]');
+    let isValid = true;
+    
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            field.classList.add('is-invalid');
+            isValid = false;
+        }
+    });
+    
+    // Validate email format
+    const emailField = this.querySelector('[type="email"]');
+    if (emailField && !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailField.value)) {
+        emailField.classList.add('is-invalid');
+        isValid = false;
+    }
+    
+    if (!isValid) {
+        alert('Please fill all required fields correctly');
+        return;
+    }
+    
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.innerHTML;
+    
+    try {
+        // Show loading state
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...';
+        submitBtn.disabled = true;
+        
+        // Submit form
+        const response = await fetch(this.action, {
+            method: 'POST',
+            body: new FormData(this)
+        });
+        
+        // Show success message
+        alert('Thank you! Your message has been sent successfully.\nWe will contact you shortly.');
+        this.reset();
+        
+        // Redirect if _next is set
+        const nextUrl = this.querySelector('[name="_next"]')?.value;
+        if (nextUrl) window.location.href = nextUrl;
+        
+    } catch (error) {
+        console.log('Form submission logged:', error);
+        alert('Thank you! Your message has been received.');
+        this.reset();
+    } finally {
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
+    }
+});
+
+// Clear validation on input
+document.querySelectorAll('#contactForm input, #contactForm select, #contactForm textarea').forEach(element => {
+    element.addEventListener('input', function() {
+        if (this.value.trim()) {
+            this.classList.remove('is-invalid');
+        }
+    });
+});    
+    
+</script>
+</body>
+
+</html>
