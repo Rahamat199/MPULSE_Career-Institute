@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEET Test Series - Master Your Medical Entrance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        
+        .question-card {
+            transition: all 0.3s ease;
+        }
+        
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .option-btn:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .option-btn.selected {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .option-btn.correct {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .option-btn.incorrect {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white bg-opacity-20 p-2 rounded-lg">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">NEET Test Series</h1>
+                        <p class="text-sm opacity-90">Master Your Medical Entrance</p>
+                    </div>
+                </div>
+                
+                <!-- Navigation Menu -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <button onclick="showDashboard()" class="nav-btn px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition-colors">
+                        Dashboard
+                    </button>
+                    <button onclick="showTestSeries()" class="nav-btn px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition-colors">
+                        Test Series
+                    </button>
+                    <button onclick="showResults()" class="nav-btn px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition-colors">
+                        Results
+                    </button>
+                </nav>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="text-sm opacity-90">Welcome back,</p>
+                        <p class="font-semibold">Priya Sharma</p>
+                    </div>
+                    <div class="bg-white bg-opacity-20 p-2 rounded-full">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-6 py-8">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="space-y-8">
+            <!-- Real-time Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Row 1 -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Tests Completed</p>
+                            <p class="text-3xl font-bold text-blue-600" id="dashboardTestsCompleted">0</p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Average Marks</p>
+                            <p class="text-3xl font-bold text-green-600" id="dashboardAverageMarks">0</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Best Marks</p>
+                            <p class="text-3xl font-bold text-emerald-600" id="dashboardBestMarks">0</p>
+                        </div>
+                        <div class="bg-emerald-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Lowest Marks</p>
+                            <p class="text-3xl font-bold text-red-600" id="dashboardLowestMarks">0</p>
+                        </div>
+                        <div class="bg-red-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row 2 -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Total Questions</p>
+                            <p class="text-3xl font-bold text-indigo-600" id="dashboardTotalQuestions">0</p>
+                        </div>
+                        <div class="bg-indigo-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Unattempted</p>
+                            <p class="text-3xl font-bold text-orange-600" id="dashboardUnattempted">0</p>
+                        </div>
+                        <div class="bg-orange-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Correct Answers</p>
+                            <p class="text-3xl font-bold text-teal-600" id="dashboardCorrectAnswers">0</p>
+                        </div>
+                        <div class="bg-teal-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Wrong Answers</p>
+                            <p class="text-3xl font-bold text-rose-600" id="dashboardWrongAnswers">0</p>
+                        </div>
+                        <div class="bg-rose-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-rose-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row 3 -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Total Marks Earned</p>
+                            <p class="text-3xl font-bold text-cyan-600" id="dashboardTotalMarks">0</p>
+                        </div>
+                        <div class="bg-cyan-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-cyan-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7zm6 7a1 1 0 011 1v3a1 1 0 11-2 0v-3a1 1 0 011-1zm-3 3a1 1 0 100 2h.01a1 1 0 100-2H10zm-4 1a1 1 0 011-1h.01a1 1 0 110 2H7a1 1 0 01-1-1zm1-4a1 1 0 100 2h.01a1 1 0 100-2H7zm2 1a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zm4-4a1 1 0 100 2h.01a1 1 0 100-2H13zM9 9a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zM7 8a1 1 0 000 2h.01a1 1 0 000-2H7z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Accuracy Rate</p>
+                            <p class="text-3xl font-bold text-amber-600" id="dashboardAccuracy">0%</p>
+                        </div>
+                        <div class="bg-amber-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Negative Marks</p>
+                            <p class="text-3xl font-bold text-violet-600" id="dashboardNegativeMarks">0</p>
+                        </div>
+                        <div class="bg-violet-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-violet-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Net Score</p>
+                            <p class="text-3xl font-bold text-pink-600" id="dashboardNetScore">0</p>
+                        </div>
+                        <div class="bg-pink-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-pink-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Test History -->
+            <div class="bg-white rounded-xl shadow-md p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Recent Test History</h2>
+                <div class="space-y-4" id="recentTestHistory">
+                    <!-- Recent tests will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Series Page -->
+        <div id="testSeriesPage" class="hidden space-y-8">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">NEET Test Series</h2>
+                <p class="text-gray-600 text-lg">Choose your chapter to start practicing</p>
+            </div>
+            
+            <!-- Subject Chapters in Columns -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-8">
+                <!-- Physics Column -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-blue-100 p-3 rounded-full mr-3">
+                            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-blue-600">Physics</h3>
+                    </div>
+                    <div class="space-y-2" id="physicsChapters">
+                        <!-- Physics chapters will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- Chemistry Column -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-green-100 p-3 rounded-full mr-3">
+                            <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547A1.998 1.998 0 004 17.658V18a2 2 0 002 2h8a2 2 0 002-2v-.342a1.998 1.998 0 00-.572-1.405zM12 6a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-green-600">Chemistry</h3>
+                    </div>
+                    <div class="space-y-2" id="chemistryChapters">
+                        <!-- Chemistry chapters will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- Mathematics Column -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-purple-100 p-3 rounded-full mr-3">
+                            <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-purple-600">Mathematics</h3>
+                    </div>
+                    <div class="space-y-2" id="mathChapters">
+                        <!-- Math chapters will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- Biology Column -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-red-100 p-3 rounded-full mr-3">
+                            <svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-red-600">Biology</h3>
+                    </div>
+                    <div class="space-y-2" id="biologyChapters">
+                        <!-- Biology chapters will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chapters Page -->
+        <div id="chaptersPage" class="hidden space-y-6">
+            <div class="flex items-center justify-between">
+                <button onclick="showTestSeries()" class="flex items-center space-x-2 text-blue-600 hover:text-blue-800">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Back to Subjects</span>
+                </button>
+                <h2 class="text-2xl font-bold text-gray-800" id="subjectTitle">Physics Chapters</h2>
+            </div>
+            
+            <div class="chapter-grid" id="chaptersGrid">
+                <!-- Chapters will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Test Interface -->
+        <div id="testInterface" class="hidden">
+            <!-- Test Header -->
+            <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800" id="testTitle">Physics - Mechanics</h2>
+                        <p class="text-gray-600">Question <span id="currentQuestion">1</span> of <span id="totalQuestions">10</span></p>
+                    </div>
+                    <div class="flex items-center space-x-6">
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-red-600" id="timeRemaining">30:00</p>
+                            <p class="text-sm text-gray-600">Time Left</p>
+                        </div>
+                        <button onclick="submitTest()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium">
+                            Submit Test
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="mt-4">
+                    <div class="bg-gray-200 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full progress-bar" style="width: 10%" id="progressBar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white rounded-xl shadow-md p-8 question-card">
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4" id="questionText">
+                        Loading question...
+                    </h3>
+                </div>
+                
+                <div class="space-y-3" id="optionsContainer">
+                    <!-- Options will be populated by JavaScript -->
+                </div>
+                
+                <div class="flex justify-between mt-8">
+                    <button onclick="previousQuestion()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-lg font-medium transition-colors" id="prevBtn" disabled>
+                        Previous
+                    </button>
+                    <div class="flex space-x-3">
+                        <button onclick="clearAnswer()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                            Clear Answer
+                        </button>
+                        <button onclick="markForReview()" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                            Mark for Review
+                        </button>
+                        <button onclick="nextQuestion()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors" id="nextBtn">
+                            Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Navigation -->
+            <div class="bg-white rounded-xl shadow-md p-6 mt-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Question Navigation</h3>
+                <div class="grid grid-cols-10 gap-2" id="questionNav">
+                    <!-- Question numbers will be populated by JavaScript -->
+                </div>
+                <div class="flex items-center space-x-6 mt-4 text-sm">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-green-500 rounded"></div>
+                        <span>Answered</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+                        <span>Marked for Review</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-red-500 rounded"></div>
+                        <span>Not Answered</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-blue-500 rounded"></div>
+                        <span>Current</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Page -->
+        <div id="resultsPage" class="hidden space-y-8">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Test Results & Analytics</h2>
+                <p class="text-gray-600 text-lg">Track your progress and analyze your performance</p>
+            </div>
+            
+            <!-- Results content here -->
+        </div>
+
+        <!-- Test Completion Results Section -->
+        <div id="resultsSection" class="hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-md p-8 text-center">
+                <div class="mb-6">
+                    <div class="bg-green-100 p-4 rounded-full w-20 h-20 mx-auto mb-4">
+                        <svg class="w-12 h-12 text-green-600 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-800">Test Completed!</h2>
+                    <p class="text-gray-600 mt-2">Great job! Here's your performance summary</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <p class="text-3xl font-bold text-blue-600" id="finalScore">0</p>
+                        <p class="text-gray-600">Total Score</p>
+                    </div>
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <p class="text-3xl font-bold text-green-600" id="correctAnswers">0</p>
+                        <p class="text-gray-600">Correct</p>
+                    </div>
+                    <div class="bg-red-50 p-6 rounded-lg">
+                        <p class="text-3xl font-bold text-red-600" id="incorrectAnswers">0</p>
+                        <p class="text-gray-600">Incorrect</p>
+                    </div>
+                    <div class="bg-yellow-50 p-6 rounded-lg">
+                        <p class="text-3xl font-bold text-yellow-600" id="unanswered">0</p>
+                        <p class="text-gray-600">Unanswered</p>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <p class="text-gray-600 text-center">
+                        Redirecting to dashboard in <span id="redirectCountdown" class="font-bold text-blue-600">5</span> seconds...
+                    </p>
+                </div>
+                
+                <div class="flex justify-center space-x-4">
+                    <button onclick="showDashboard()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium">
+                        Back to Dashboard
+                    </button>
+                    <button onclick="downloadAnswerSheet()" class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium">
+                        Download Answer Sheet
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Count Modal -->
+    <div id="questionModal" class="modal">
+        <div class="bg-white rounded-xl shadow-xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6" id="modalTitle">Select Question Count</h3>
+            <p class="text-gray-600 mb-6" id="modalSubtitle">How many questions would you like to attempt?</p>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <button onclick="startChapterTest(30)" class="bg-blue-100 hover:bg-blue-200 text-blue-800 py-4 rounded-lg font-medium">
+                    30 Questions
+                </button>
+                <button onclick="startChapterTest(50)" class="bg-green-100 hover:bg-green-200 text-green-800 py-4 rounded-lg font-medium">
+                    50 Questions
+                </button>
+                <button onclick="startChapterTest(100)" class="bg-purple-100 hover:bg-purple-200 text-purple-800 py-4 rounded-lg font-medium">
+                    100 Questions
+                </button>
+                <button onclick="openCustomQuestionModal()" class="bg-orange-100 hover:bg-orange-200 text-orange-800 py-4 rounded-lg font-medium">
+                    Custom
+                </button>
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-lg font-medium">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Question Count Modal -->
+    <div id="customQuestionModal" class="modal">
+        <div class="bg-white rounded-xl shadow-xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">Custom Question Count</h3>
+            <p class="text-gray-600 mb-6">Enter the number of questions you want to attempt:</p>
+            
+            <div class="mb-6">
+                <input type="number" id="customQuestionCount" min="1" max="200" placeholder="Enter number (1-200)" 
+                       class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-center text-lg font-medium">
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeCustomModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-lg font-medium">
+                    Cancel
+                </button>
+                <button onclick="startCustomTest()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium">
+                    Start Test
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentQuestionIndex = 0;
+        let totalQuestions = 30;
+        let selectedAnswers = {};
+        let markedForReview = new Set();
+        let timeRemaining = 45 * 60; // 45 minutes in seconds
+        let timerInterval;
+        let currentSubject = '';
+        let currentChapter = '';
+        let currentTestQuestions = [];
+        let testResults = [];
+        let wrongAnswerQuestions = []; // Store questions answered incorrectly for random pickup
+
+        // Chapter data for each subject
+        const chaptersData = {
+            physics: [
+                'Mechanics', 'Thermodynamics', 'Waves and Oscillations', 'Optics', 
+                'Electricity and Magnetism', 'Modern Physics', 'Atomic Structure', 
+                'Nuclear Physics', 'Electromagnetic Waves', 'Dual Nature of Matter'
+            ],
+            chemistry: [
+                'Atomic Structure', 'Chemical Bonding', 'Thermodynamics', 'Chemical Equilibrium',
+                'Ionic Equilibrium', 'Electrochemistry', 'Chemical Kinetics', 'Surface Chemistry',
+                'Organic Chemistry Basics', 'Hydrocarbons', 'Organic Compounds with Functional Groups',
+                'Biomolecules', 'Polymers', 'Chemistry in Everyday Life'
+            ],
+            math: [
+                'Sets and Functions', 'Algebra', 'Coordinate Geometry', 'Calculus',
+                'Mathematical Reasoning', 'Statistics and Probability', 'Trigonometry',
+                'Sequences and Series', 'Permutations and Combinations', 'Binomial Theorem',
+                'Limits and Derivatives', 'Integrals', 'Differential Equations', 'Vector Algebra'
+            ],
+            biology: [
+                'The Living World', 'Biological Classification', 'Plant Kingdom', 'Animal Kingdom',
+                'Morphology of Flowering Plants', 'Anatomy of Flowering Plants', 'Structural Organisation in Animals',
+                'Cell Structure and Function', 'Biomolecules', 'Cell Cycle and Division',
+                'Transport in Plants', 'Mineral Nutrition', 'Photosynthesis', 'Respiration in Plants',
+                'Plant Growth and Development', 'Digestion and Absorption', 'Breathing and Exchange of Gases',
+                'Body Fluids and Circulation', 'Excretory Products', 'Locomotion and Movement',
+                'Neural Control and Coordination', 'Chemical Coordination', 'Reproduction in Organisms',
+                'Sexual Reproduction in Plants', 'Human Reproduction', 'Reproductive Health'
+            ]
+        };
+
+        // Sample questions database
+        const questionsDatabase = {
+            physics: {
+                'Mechanics': [
+                    {
+                        question: "A particle moves in a straight line with constant acceleration. If it covers 20m in the first 4 seconds and 60m in the next 4 seconds, what is its acceleration?",
+                        options: ["2.5 m/s²", "5.0 m/s²", "7.5 m/s²", "10.0 m/s²"],
+                        correct: "A",
+                        explanation: "Using kinematic equations: s = ut + ½at². For first 4s: 20 = 4u + 8a. For next 4s: 60 = 4(u+4a) + 8a. Solving: a = 2.5 m/s²"
+                    },
+                    {
+                        question: "The coefficient of friction between a block and inclined plane is μ = 0.5. What is the maximum angle of inclination for which the block will not slide?",
+                        options: ["30°", "45°", "26.57°", "60°"],
+                        correct: "C",
+                        explanation: "For equilibrium: tan θ = μ. Therefore θ = tan⁻¹(0.5) = 26.57°"
+                    }
+                ],
+                'Thermodynamics': [
+                    {
+                        question: "In an adiabatic process, the relationship between pressure and volume is given by:",
+                        options: ["PV = constant", "PV^γ = constant", "P/V = constant", "P + V = constant"],
+                        correct: "B",
+                        explanation: "In an adiabatic process, no heat exchange occurs, so PV^γ = constant, where γ is the heat capacity ratio."
+                    }
+                ]
+            },
+            chemistry: {
+                'Atomic Structure': [
+                    {
+                        question: "Which of the following quantum numbers determines the shape of an orbital?",
+                        options: ["Principal quantum number (n)", "Azimuthal quantum number (l)", "Magnetic quantum number (m)", "Spin quantum number (s)"],
+                        correct: "B",
+                        explanation: "The azimuthal quantum number (l) determines the shape of the orbital. l=0 (s-orbital), l=1 (p-orbital), l=2 (d-orbital), etc."
+                    }
+                ],
+                'Chemical Bonding': [
+                    {
+                        question: "The hybridization of carbon in methane (CH₄) is:",
+                        options: ["sp", "sp²", "sp³", "sp³d"],
+                        correct: "C",
+                        explanation: "In methane, carbon forms 4 sigma bonds with hydrogen atoms, requiring sp³ hybridization (1 s + 3 p orbitals)."
+                    }
+                ]
+            },
+            math: {
+                'Sets and Functions': [
+                    {
+                        question: "If A = {1, 2, 3} and B = {2, 3, 4}, then A ∩ B is:",
+                        options: ["{1, 2, 3, 4}", "{2, 3}", "{1}", "{4}"],
+                        correct: "B",
+                        explanation: "The intersection A ∩ B contains elements common to both sets A and B, which are {2, 3}."
+                    }
+                ],
+                'Algebra': [
+                    {
+                        question: "The roots of the equation x² - 5x + 6 = 0 are:",
+                        options: ["2, 3", "1, 6", "-2, -3", "5, 1"],
+                        correct: "A",
+                        explanation: "Factoring: x² - 5x + 6 = (x-2)(x-3) = 0. Therefore, x = 2 or x = 3."
+                    }
+                ]
+            },
+            biology: {
+                'Cell Structure and Function': [
+                    {
+                        question: "The powerhouse of the cell is:",
+                        options: ["Nucleus", "Ribosome", "Mitochondria", "Endoplasmic Reticulum"],
+                        correct: "C",
+                        explanation: "Mitochondria are called the powerhouse of the cell because they produce ATP through cellular respiration."
+                    }
+                ],
+                'The Living World': [
+                    {
+                        question: "The basic unit of classification is:",
+                        options: ["Kingdom", "Phylum", "Species", "Genus"],
+                        correct: "C",
+                        explanation: "Species is the basic unit of classification. It represents a group of organisms that can interbreed and produce fertile offspring."
+                    }
+                ]
+            }
+        };
+
+        // Initialize the application
+        function init() {
+            showDashboard();
+            updateDashboardStats();
+            updateRecentTestHistory();
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            hideAllSections();
+            document.getElementById('dashboard').classList.remove('hidden');
+            updateNavButtons('dashboard');
+            stopTimer();
+        }
+
+        // Show test series page
+        function showTestSeries() {
+            hideAllSections();
+            document.getElementById('testSeriesPage').classList.remove('hidden');
+            updateNavButtons('testSeries');
+            stopTimer();
+            populateAllChapters();
+        }
+
+        // Show results page
+        function showResults() {
+            hideAllSections();
+            document.getElementById('resultsPage').classList.remove('hidden');
+            updateNavButtons('results');
+            stopTimer();
+        }
+
+        // Hide all sections
+        function hideAllSections() {
+            const sections = ['dashboard', 'testSeriesPage', 'chaptersPage', 'testInterface', 'resultsSection', 'resultsPage'];
+            sections.forEach(section => {
+                document.getElementById(section).classList.add('hidden');
+            });
+        }
+
+        // Update navigation button states
+        function updateNavButtons(activePage) {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('bg-white', 'bg-opacity-20');
+            });
+            
+            const pageMap = {
+                'dashboard': 0,
+                'testSeries': 1,
+                'results': 2
+            };
+            
+            if (pageMap[activePage] !== undefined) {
+                navButtons[pageMap[activePage]].classList.add('bg-white', 'bg-opacity-20');
+            }
+        }
+
+        // Populate all chapters in columns
+        function populateAllChapters() {
+            const subjects = ['physics', 'chemistry', 'math', 'biology'];
+            const subjectColors = {
+                physics: 'blue',
+                chemistry: 'green',
+                math: 'purple',
+                biology: 'red'
+            };
+            
+            subjects.forEach(subject => {
+                const container = document.getElementById(subject + 'Chapters');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                const chapters = chaptersData[subject] || [];
+                
+                chapters.forEach(chapter => {
+                    const chapterButton = document.createElement('button');
+                    chapterButton.className = `w-full text-left p-3 rounded-lg hover:bg-${subjectColors[subject]}-50 hover:text-${subjectColors[subject]}-700 transition-colors text-sm text-gray-700 border border-gray-200 hover:border-${subjectColors[subject]}-300`;
+                    chapterButton.textContent = chapter;
+                    chapterButton.onclick = () => selectChapter(subject, chapter);
+                    container.appendChild(chapterButton);
+                });
+            });
+        }
+
+        // Show chapters for a subject (legacy function - kept for compatibility)
+        function showChapters(subject) {
+            // This function is now handled by populateAllChapters
+            // but kept for any existing references
+        }
+
+        // Get question count for a chapter
+        function getQuestionCount(subject, chapter) {
+            const questions = questionsDatabase[subject]?.[chapter] || [];
+            return Math.max(questions.length, 20); // Show at least 20 for demo
+        }
+
+        // Select chapter and show question count modal
+        function selectChapter(subject, chapter) {
+            currentSubject = subject;
+            currentChapter = chapter;
+            document.getElementById('modalTitle').textContent = `${currentChapter} Test`;
+            document.getElementById('modalSubtitle').textContent = 
+                `How many questions would you like to attempt from ${currentChapter}?`;
+            document.getElementById('questionModal').classList.add('show');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('questionModal').classList.remove('show');
+        }
+
+        // Open custom question modal
+        function openCustomQuestionModal() {
+            closeModal();
+            document.getElementById('customQuestionModal').classList.add('show');
+            document.getElementById('customQuestionCount').focus();
+        }
+
+        // Close custom modal
+        function closeCustomModal() {
+            document.getElementById('customQuestionModal').classList.remove('show');
+            document.getElementById('customQuestionCount').value = '';
+        }
+
+        // Start custom test
+        function startCustomTest() {
+            const customCount = parseInt(document.getElementById('customQuestionCount').value);
+            if (customCount && customCount >= 1 && customCount <= 200) {
+                closeCustomModal();
+                startChapterTest(customCount);
+            } else {
+                alert('Please enter a valid number between 1 and 200');
+            }
+        }
+
+        // Start chapter test with specified question count
+        function startChapterTest(questionCount) {
+            closeModal();
+            
+            totalQuestions = questionCount;
+            currentQuestionIndex = 0;
+            selectedAnswers = {};
+            markedForReview = new Set();
+            timeRemaining = questionCount * 90; // 1.5 minutes per question
+            
+            // Generate questions for the test
+            generateTestQuestions();
+            
+            hideAllSections();
+            document.getElementById('testInterface').classList.remove('hidden');
+            
+            document.getElementById('testTitle').textContent = 
+                `${currentSubject.charAt(0).toUpperCase() + currentSubject.slice(1)} - ${currentChapter}`;
+            document.getElementById('totalQuestions').textContent = totalQuestions;
+            
+            generateQuestionNavigation();
+            loadQuestion();
+            startTimer();
+        }
+
+        // Generate test questions with randomization
+        function generateTestQuestions() {
+            const chapterQuestions = questionsDatabase[currentSubject]?.[currentChapter] || [];
+            currentTestQuestions = [];
+            
+            // Create a pool of questions including wrong answer pickups
+            let questionPool = [...chapterQuestions];
+            
+            // Add previously wrong questions for random pickup
+            const wrongFromThisChapter = wrongAnswerQuestions.filter(q => 
+                q.subject === currentSubject && q.chapter === currentChapter
+            );
+            questionPool = questionPool.concat(wrongFromThisChapter.map(q => q.question));
+            
+            // If we have enough questions in pool, randomly select them
+            if (questionPool.length >= totalQuestions) {
+                // Shuffle and select random questions
+                const shuffled = shuffleArray([...questionPool]);
+                currentTestQuestions = shuffled.slice(0, totalQuestions);
+            } else {
+                // Use all available questions and generate additional ones
+                currentTestQuestions = [...questionPool];
+                
+                // Generate additional questions if needed
+                while (currentTestQuestions.length < totalQuestions) {
+                    const additionalQuestion = generateSampleQuestion(currentSubject, currentChapter, currentTestQuestions.length + 1);
+                    currentTestQuestions.push(additionalQuestion);
+                }
+            }
+            
+            // Final shuffle to randomize order
+            currentTestQuestions = shuffleArray(currentTestQuestions);
+        }
+
+        // Shuffle array function
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Generate sample question (fallback)
+        function generateSampleQuestion(subject, chapter, questionNumber) {
+            return {
+                question: `Sample question ${questionNumber} from ${chapter}. This is a practice question to test your understanding of ${chapter} concepts.`,
+                options: ["Option A", "Option B", "Option C", "Option D"],
+                correct: "A",
+                explanation: `This is a sample explanation for question ${questionNumber} from ${chapter}. In a real test, this would contain detailed solution steps.`
+            };
+        }
+
+        // Generate question navigation
+        function generateQuestionNavigation() {
+            const nav = document.getElementById('questionNav');
+            nav.innerHTML = '';
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'w-8 h-8 rounded text-sm font-medium bg-red-500 text-white hover:bg-red-600';
+                btn.textContent = i;
+                btn.onclick = () => goToQuestion(i - 1);
+                nav.appendChild(btn);
+            }
+            
+            updateQuestionNavigation();
+        }
+
+        // Update question navigation colors
+        function updateQuestionNavigation() {
+            const nav = document.getElementById('questionNav');
+            const buttons = nav.children;
+            
+            for (let i = 0; i < buttons.length; i++) {
+                const btn = buttons[i];
+                
+                if (i === currentQuestionIndex) {
+                    btn.className = 'w-8 h-8 rounded text-sm font-medium bg-blue-500 text-white hover:bg-blue-600 transition-all transform hover:scale-110 cursor-pointer';
+                } else if (selectedAnswers[i]) {
+                    if (markedForReview.has(i)) {
+                        btn.className = 'w-8 h-8 rounded text-sm font-medium bg-yellow-500 text-white hover:bg-yellow-600 transition-all transform hover:scale-110 cursor-pointer';
+                    } else {
+                        btn.className = 'w-8 h-8 rounded text-sm font-medium bg-green-500 text-white hover:bg-green-600 transition-all transform hover:scale-110 cursor-pointer';
+                    }
+                } else if (markedForReview.has(i)) {
+                    btn.className = 'w-8 h-8 rounded text-sm font-medium bg-yellow-500 text-white hover:bg-yellow-600 transition-all transform hover:scale-110 cursor-pointer';
+                } else {
+                    btn.className = 'w-8 h-8 rounded text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-all transform hover:scale-110 cursor-pointer';
+                }
+            }
+        }
+
+        // Load current question
+        function loadQuestion() {
+            if (currentQuestionIndex >= currentTestQuestions.length) return;
+            
+            const question = currentTestQuestions[currentQuestionIndex];
+            
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const letter = String.fromCharCode(65 + index);
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 border-2 border-gray-200 rounded-lg';
+                btn.innerHTML = `<span class="font-medium text-blue-600">${letter})</span> ${option}`;
+                btn.onclick = () => selectOption(btn, letter);
+                container.appendChild(btn);
+            });
+            
+            // Restore selected answer
+            if (selectedAnswers[currentQuestionIndex]) {
+                const selectedBtn = container.children[selectedAnswers[currentQuestionIndex].charCodeAt(0) - 65];
+                if (selectedBtn) selectedBtn.classList.add('selected');
+            }
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            document.getElementById('nextBtn').textContent = currentQuestionIndex === totalQuestions - 1 ? 'Finish' : 'Next';
+            
+            // Update progress
+            const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            updateQuestionNavigation();
+        }
+
+        // Select an option
+        function selectOption(btn, letter) {
+            // Remove previous selection
+            const container = document.getElementById('optionsContainer');
+            Array.from(container.children).forEach(child => {
+                child.classList.remove('selected');
+            });
+            
+            // Add selection to clicked button
+            btn.classList.add('selected');
+            selectedAnswers[currentQuestionIndex] = letter;
+            
+            updateQuestionNavigation();
+        }
+
+        // Go to specific question
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            loadQuestion();
+        }
+
+        // Previous question
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        // Next question
+        function nextQuestion() {
+            if (currentQuestionIndex < totalQuestions - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                submitTest();
+            }
+        }
+
+        // Clear answer for current question
+        function clearAnswer() {
+            // Remove answer from selectedAnswers
+            delete selectedAnswers[currentQuestionIndex];
+            
+            // Clear visual selection from options
+            const container = document.getElementById('optionsContainer');
+            Array.from(container.children).forEach(child => {
+                child.classList.remove('selected');
+            });
+            
+            // Update navigation to reflect the change
+            updateQuestionNavigation();
+        }
+
+        // Mark for review
+        function markForReview() {
+            if (markedForReview.has(currentQuestionIndex)) {
+                markedForReview.delete(currentQuestionIndex);
+            } else {
+                markedForReview.add(currentQuestionIndex);
+            }
+            updateQuestionNavigation();
+        }
+
+        // Start timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                
+                document.getElementById('timeRemaining').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeRemaining <= 0) {
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        // Stop timer
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+        }
+
+        // Submit test
+        function submitTest() {
+            stopTimer();
+            
+            // Calculate results with NEET marking scheme
+            let correct = 0;
+            let incorrect = 0;
+            const answered = Object.keys(selectedAnswers).length;
+            const unanswered = totalQuestions - answered;
+            
+            // Check answers and track wrong ones
+            for (let i = 0; i < currentTestQuestions.length; i++) {
+                if (selectedAnswers[i]) {
+                    if (selectedAnswers[i] === currentTestQuestions[i].correct) {
+                        correct++;
+                    } else {
+                        incorrect++;
+                        // Add wrong answer to pickup pool
+                        wrongAnswerQuestions.push({
+                            subject: currentSubject,
+                            chapter: currentChapter,
+                            question: currentTestQuestions[i],
+                            userAnswer: selectedAnswers[i],
+                            correctAnswer: currentTestQuestions[i].correct,
+                            timestamp: new Date()
+                        });
+                    }
+                }
+            }
+            
+            // NEET Marking Scheme: +4 for correct, -1 for wrong, 0 for unanswered
+            const positiveMarks = correct * 4;
+            const negativeMarks = incorrect * 1;
+            const netMarks = positiveMarks - negativeMarks;
+            const maxPossibleMarks = totalQuestions * 4;
+            const percentage = maxPossibleMarks > 0 ? (netMarks / maxPossibleMarks) * 100 : 0;
+            
+            // Store test result
+            const testResult = {
+                subject: currentSubject,
+                chapter: currentChapter,
+                totalQuestions: totalQuestions,
+                correct: correct,
+                incorrect: incorrect,
+                unanswered: unanswered,
+                positiveMarks: positiveMarks,
+                negativeMarks: negativeMarks,
+                netMarks: netMarks,
+                maxPossibleMarks: maxPossibleMarks,
+                percentage: percentage,
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString(),
+                answers: selectedAnswers,
+                questions: currentTestQuestions
+            };
+            
+            testResults.push(testResult);
+            
+            // Update UI with marks instead of percentage
+            document.getElementById('finalScore').textContent = netMarks + '/' + maxPossibleMarks;
+            document.getElementById('correctAnswers').textContent = correct + ' (+' + positiveMarks + ')';
+            document.getElementById('incorrectAnswers').textContent = incorrect + ' (-' + negativeMarks + ')';
+            document.getElementById('unanswered').textContent = unanswered + ' (0)';
+            
+            // Show results section briefly, then auto-redirect to dashboard
+            hideAllSections();
+            document.getElementById('resultsSection').classList.remove('hidden');
+            
+            // Update dashboard statistics
+            updateDashboardStats();
+            
+            // Update recent test history
+            updateRecentTestHistory();
+            
+            // Start countdown timer for redirect
+            let redirectCountdown = 5;
+            const countdownElement = document.getElementById('redirectCountdown');
+            
+            const countdownInterval = setInterval(() => {
+                redirectCountdown--;
+                if (countdownElement) {
+                    countdownElement.textContent = redirectCountdown;
+                }
+                
+                if (redirectCountdown <= 0) {
+                    clearInterval(countdownInterval);
+                    showDashboard();
+                }
+            }, 1000);
+        }
+
+        // Download answer sheet as PDF
+        function downloadAnswerSheet() {
+            if (testResults.length === 0) return;
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const latestResult = testResults[testResults.length - 1];
+            
+            // Title
+            doc.setFontSize(20);
+            doc.text('NEET Test Series - Answer Sheet', 20, 20);
+            
+            // Test details
+            doc.setFontSize(12);
+            doc.text(`Subject: ${latestResult.subject.charAt(0).toUpperCase() + latestResult.subject.slice(1)}`, 20, 35);
+            doc.text(`Chapter: ${latestResult.chapter}`, 20, 45);
+            doc.text(`Date: ${latestResult.date} ${latestResult.time}`, 20, 55);
+            doc.text(`Score: ${Math.round(latestResult.score)}% (${latestResult.correct}/${latestResult.totalQuestions})`, 20, 65);
+            
+            // Results summary
+            doc.text(`Correct: ${latestResult.correct}`, 20, 80);
+            doc.text(`Incorrect: ${latestResult.incorrect}`, 80, 80);
+            doc.text(`Unanswered: ${latestResult.unanswered}`, 140, 80);
+            
+            let yPosition = 100;
+            
+            // Questions and answers
+            doc.setFontSize(14);
+            doc.text('Detailed Solutions:', 20, yPosition);
+            yPosition += 15;
+            
+            doc.setFontSize(10);
+            
+            latestResult.questions.forEach((question, index) => {
+                if (yPosition > 250) {
+                    doc.addPage();
+                    yPosition = 20;
+                }
+                
+                // Question number and text
+                doc.setFont(undefined, 'bold');
+                doc.text(`Q${index + 1}:`, 20, yPosition);
+                doc.setFont(undefined, 'normal');
+                
+                const questionLines = doc.splitTextToSize(question.question, 160);
+                doc.text(questionLines, 35, yPosition);
+                yPosition += questionLines.length * 5 + 5;
+                
+                // Options
+                question.options.forEach((option, optIndex) => {
+                    const letter = String.fromCharCode(65 + optIndex);
+                    const isSelected = latestResult.answers[index] === letter;
+                    const isCorrect = question.correct === letter;
+                    
+                    let prefix = `${letter}) `;
+                    if (isSelected && isCorrect) {
+                        prefix = `${letter}) ✓ `;
+                        doc.setTextColor(0, 150, 0); // Green
+                    } else if (isSelected && !isCorrect) {
+                        prefix = `${letter}) ✗ `;
+                        doc.setTextColor(200, 0, 0); // Red
+                    } else if (isCorrect) {
+                        prefix = `${letter}) ✓ `;
+                        doc.setTextColor(0, 150, 0); // Green
+                    } else {
+                        doc.setTextColor(0, 0, 0); // Black
+                    }
+                    
+                    doc.text(prefix + option, 25, yPosition);
+                    yPosition += 5;
+                    doc.setTextColor(0, 0, 0); // Reset to black
+                });
+                
+                // Explanation
+                doc.setFont(undefined, 'bold');
+                doc.text('Explanation:', 25, yPosition);
+                doc.setFont(undefined, 'normal');
+                yPosition += 5;
+                
+                const explanationLines = doc.splitTextToSize(question.explanation, 150);
+                doc.text(explanationLines, 25, yPosition);
+                yPosition += explanationLines.length * 5 + 10;
+            });
+            
+            // Save the PDF
+            const fileName = `${latestResult.subject}_${latestResult.chapter}_${latestResult.date.replace(/\//g, '-')}.pdf`;
+            doc.save(fileName);
+        }
+
+        // Update dashboard statistics with real data
+        function updateDashboardStats() {
+            if (testResults.length === 0) {
+                // Reset all stats to 0 if no tests completed
+                document.getElementById('dashboardTestsCompleted').textContent = '0';
+                document.getElementById('dashboardAverageMarks').textContent = '0';
+                document.getElementById('dashboardBestMarks').textContent = '0';
+                document.getElementById('dashboardLowestMarks').textContent = '0';
+                document.getElementById('dashboardTotalQuestions').textContent = '0';
+                document.getElementById('dashboardUnattempted').textContent = '0';
+                document.getElementById('dashboardCorrectAnswers').textContent = '0';
+                document.getElementById('dashboardWrongAnswers').textContent = '0';
+                document.getElementById('dashboardTotalMarks').textContent = '0';
+                document.getElementById('dashboardAccuracy').textContent = '0%';
+                document.getElementById('dashboardNegativeMarks').textContent = '0';
+                document.getElementById('dashboardNetScore').textContent = '0';
+                return;
+            }
+            
+            // Calculate cumulative statistics
+            let totalTests = testResults.length;
+            let totalQuestions = 0;
+            let totalCorrect = 0;
+            let totalIncorrect = 0;
+            let totalUnanswered = 0;
+            let totalPositiveMarks = 0;
+            let totalNegativeMarks = 0;
+            let totalNetMarks = 0;
+            let bestMarks = -Infinity;
+            let lowestMarks = Infinity;
+            
+            testResults.forEach(result => {
+                totalQuestions += result.totalQuestions;
+                totalCorrect += result.correct;
+                totalIncorrect += result.incorrect;
+                totalUnanswered += result.unanswered;
+                totalPositiveMarks += result.positiveMarks;
+                totalNegativeMarks += result.negativeMarks;
+                totalNetMarks += result.netMarks;
+                
+                if (result.netMarks > bestMarks) bestMarks = result.netMarks;
+                if (result.netMarks < lowestMarks) lowestMarks = result.netMarks;
+            });
+            
+            // Calculate averages and percentages
+            const averageMarks = totalTests > 0 ? Math.round(totalNetMarks / totalTests) : 0;
+            const accuracyRate = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+            
+            // Update dashboard elements
+            document.getElementById('dashboardTestsCompleted').textContent = totalTests;
+            document.getElementById('dashboardAverageMarks').textContent = averageMarks;
+            document.getElementById('dashboardBestMarks').textContent = bestMarks === -Infinity ? '0' : bestMarks;
+            document.getElementById('dashboardLowestMarks').textContent = lowestMarks === Infinity ? '0' : lowestMarks;
+            document.getElementById('dashboardTotalQuestions').textContent = totalQuestions;
+            document.getElementById('dashboardUnattempted').textContent = totalUnanswered;
+            document.getElementById('dashboardCorrectAnswers').textContent = totalCorrect;
+            document.getElementById('dashboardWrongAnswers').textContent = totalIncorrect;
+            document.getElementById('dashboardTotalMarks').textContent = totalPositiveMarks;
+            document.getElementById('dashboardAccuracy').textContent = accuracyRate + '%';
+            document.getElementById('dashboardNegativeMarks').textContent = totalNegativeMarks;
+            document.getElementById('dashboardNetScore').textContent = totalNetMarks;
+        }
+
+        // Update recent test history
+        function updateRecentTestHistory() {
+            const historyContainer = document.getElementById('recentTestHistory');
+            historyContainer.innerHTML = '';
+            
+            // Show last 5 test results
+            const recentTests = testResults.slice(-5).reverse();
+            
+            if (recentTests.length === 0) {
+                historyContainer.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <p>No tests completed yet. Start your first test!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            recentTests.forEach(result => {
+                const testCard = document.createElement('div');
+                testCard.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors';
+                
+                const subjectColor = {
+                    physics: 'blue',
+                    chemistry: 'green',
+                    math: 'purple',
+                    biology: 'red'
+                }[result.subject] || 'gray';
+                
+                // Determine color based on net marks performance
+                const performanceColor = result.netMarks >= (result.maxPossibleMarks * 0.7) ? 'green' : 
+                                       result.netMarks >= (result.maxPossibleMarks * 0.5) ? 'yellow' : 'red';
+                
+                testCard.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-${subjectColor}-100 p-2 rounded-full">
+                            <svg class="w-5 h-5 text-${subjectColor}-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">${result.subject.charAt(0).toUpperCase() + result.subject.slice(1)} - ${result.chapter}</h3>
+                            <p class="text-sm text-gray-600">${result.date} • ${result.totalQuestions} Questions</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-lg font-bold text-${performanceColor}-600">${result.netMarks}/${result.maxPossibleMarks}</p>
+                        <p class="text-sm text-gray-600">${result.correct}C • ${result.incorrect}W • ${result.unanswered}U</p>
+                    </div>
+                `;
+                
+                historyContainer.appendChild(testCard);
+            });
+        }
+
+        // Initialize the app
+        init();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966ab44f6458755c',t:'MTc1Mzc3MjA2MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
