@@ -1,0 +1,2908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEET Test Series - Master Your Medical Entrance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* Disable text selection during test */
+        .test-mode {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+        }
+        
+        /* Disable right-click context menu during test */
+        .test-mode * {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* Header disabled during test */
+        .header-disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        
+        .header-disabled .nav-btn {
+            cursor: not-allowed;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        
+        .question-card {
+            transition: all 0.3s ease;
+        }
+        
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .option-btn:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .option-btn.selected {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .option-btn.correct {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .option-btn.incorrect {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .improvement-indicator {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white bg-opacity-20 p-2 rounded-lg">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
+                            <path d="M19 15L20.09 18.26L24 19L20.09 19.74L19 23L17.91 19.74L14 19L17.91 18.26L19 15Z"/>
+                            <path d="M5 15L6.09 18.26L10 19L6.09 19.74L5 23L3.91 19.74L0 19L3.91 18.26L5 15Z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">NEET Test Series</h1>
+                        <p class="text-sm opacity-90">Master Your Medical Entrance</p>
+                    </div>
+                </div>
+                
+                <!-- Navigation Menu -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <button onclick="showDashboard()" class="nav-btn px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition-colors">
+                        Dashboard
+                    </button>
+                    <button onclick="showTestSeries()" class="nav-btn px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition-colors">
+                        Test Series
+                    </button>
+                    <button onclick="showResults()" class="nav-btn px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition-colors">
+                        Results
+                    </button>
+                    <button onclick="showStudyGuide()" class="nav-btn px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition-colors">
+                        Study Guide
+                    </button>
+                </nav>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="text-sm opacity-90">Study Streak</p>
+                        <p class="font-semibold flex items-center" id="studyStreak">
+                            <span id="streakDays">0</span>
+                            <span class="ml-1">days</span>
+                            <span id="streakFire" class="ml-2 text-orange-400">🔥</span>
+                        </p>
+                    </div>
+                    <div class="bg-white bg-opacity-20 p-2 rounded-full">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-6 py-8">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="space-y-8">
+            <!-- Real-time Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Row 1 -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Tests Completed</p>
+                            <p class="text-3xl font-bold text-blue-600" id="dashboardTestsCompleted">0</p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Average Marks</p>
+                            <p class="text-3xl font-bold text-green-600" id="dashboardAverageMarks">0</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Best Marks</p>
+                            <p class="text-3xl font-bold text-emerald-600" id="dashboardBestMarks">0</p>
+                        </div>
+                        <div class="bg-emerald-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Lowest Marks</p>
+                            <p class="text-3xl font-bold text-red-600" id="dashboardLowestMarks">0</p>
+                        </div>
+                        <div class="bg-red-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row 2 -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Total Questions</p>
+                            <p class="text-3xl font-bold text-indigo-600" id="dashboardTotalQuestions">0</p>
+                        </div>
+                        <div class="bg-indigo-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Unattempted</p>
+                            <p class="text-3xl font-bold text-orange-600" id="dashboardUnattempted">0</p>
+                        </div>
+                        <div class="bg-orange-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Correct Answers</p>
+                            <p class="text-3xl font-bold text-teal-600" id="dashboardCorrectAnswers">0</p>
+                        </div>
+                        <div class="bg-teal-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Wrong Answers</p>
+                            <p class="text-3xl font-bold text-rose-600" id="dashboardWrongAnswers">0</p>
+                        </div>
+                        <div class="bg-rose-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-rose-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row 3 -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Weekly Tests Taken</p>
+                            <p class="text-3xl font-bold text-cyan-600" id="dashboardWeeklyTests">0</p>
+                        </div>
+                        <div class="bg-cyan-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-cyan-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Accuracy Rate</p>
+                            <p class="text-3xl font-bold text-amber-600" id="dashboardAccuracy">0%</p>
+                        </div>
+                        <div class="bg-amber-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Negative Marks</p>
+                            <p class="text-3xl font-bold text-violet-600" id="dashboardNegativeMarks">0</p>
+                        </div>
+                        <div class="bg-violet-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-violet-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Monthly Tests Taken</p>
+                            <p class="text-3xl font-bold text-pink-600" id="dashboardMonthlyTests">0</p>
+                        </div>
+                        <div class="bg-pink-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-pink-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Recent Test History -->
+            <div class="bg-white rounded-xl shadow-md p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Recent Test History</h2>
+                <div class="space-y-4" id="recentTestHistory">
+                    <!-- Recent tests will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Series Page -->
+        <div id="testSeriesPage" class="hidden space-y-8">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">NEET Test Series</h2>
+                <p class="text-gray-600 text-lg">Choose your chapter to start practicing</p>
+            </div>
+            
+            <!-- Subject Chapters in Columns -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-8">
+                <!-- Physics Column -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-blue-100 p-3 rounded-full mr-3">
+                            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-blue-600">Physics</h3>
+                    </div>
+                    <div class="space-y-2" id="physicsChapters">
+                        <!-- Physics chapters will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- Chemistry Column -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-green-100 p-3 rounded-full mr-3">
+                            <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547A1.998 1.998 0 004 17.658V18a2 2 0 002 2h8a2 2 0 002-2v-.342a1.998 1.998 0 00-.572-1.405zM12 6a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-green-600">Chemistry</h3>
+                    </div>
+                    <div class="space-y-2" id="chemistryChapters">
+                        <!-- Chemistry chapters will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- Mathematics Column -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-purple-100 p-3 rounded-full mr-3">
+                            <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-purple-600">Mathematics</h3>
+                    </div>
+                    <div class="space-y-2" id="mathChapters">
+                        <!-- Math chapters will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- Biology Column -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-red-100 p-3 rounded-full mr-3">
+                            <svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-red-600">Biology</h3>
+                    </div>
+                    <div class="space-y-2" id="biologyChapters">
+                        <!-- Biology chapters will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chapters Page -->
+        <div id="chaptersPage" class="hidden space-y-6">
+            <div class="flex items-center justify-between">
+                <button onclick="showTestSeries()" class="flex items-center space-x-2 text-blue-600 hover:text-blue-800">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Back to Subjects</span>
+                </button>
+                <h2 class="text-2xl font-bold text-gray-800" id="subjectTitle">Physics Chapters</h2>
+            </div>
+            
+            <div class="chapter-grid" id="chaptersGrid">
+                <!-- Chapters will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Test Interface -->
+        <div id="testInterface" class="hidden">
+            <!-- Test Header -->
+            <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800" id="testTitle">Physics - Mechanics</h2>
+                        <p class="text-gray-600">Question <span id="currentQuestion">1</span> of <span id="totalQuestions">10</span></p>
+                    </div>
+                    <div class="flex items-center space-x-6">
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-red-600" id="timeRemaining">30:00</p>
+                            <p class="text-sm text-gray-600">Time Left</p>
+                        </div>
+                        <button onclick="submitTest()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium">
+                            Submit Test
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="mt-4">
+                    <div class="bg-gray-200 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full progress-bar" style="width: 10%" id="progressBar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white rounded-xl shadow-md p-8 question-card">
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4" id="questionText">
+                        Loading question...
+                    </h3>
+                </div>
+                
+                <div class="space-y-3" id="optionsContainer">
+                    <!-- Options will be populated by JavaScript -->
+                </div>
+                
+                <div class="flex justify-between mt-8">
+                    <button onclick="previousQuestion()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-lg font-medium transition-colors" id="prevBtn" disabled>
+                        Previous
+                    </button>
+                    <div class="flex space-x-3">
+                        <button onclick="clearAnswer()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                            Clear Answer
+                        </button>
+                        <button onclick="markForReview()" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                            Mark for Review
+                        </button>
+                        <button onclick="nextQuestion()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors" id="nextBtn">
+                            Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Navigation -->
+            <div class="bg-white rounded-xl shadow-md p-6 mt-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Question Navigation</h3>
+                <div class="grid grid-cols-10 gap-2" id="questionNav">
+                    <!-- Question numbers will be populated by JavaScript -->
+                </div>
+                <div class="flex items-center space-x-6 mt-4 text-sm">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-green-500 rounded"></div>
+                        <span>Answered</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+                        <span>Marked for Review</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-red-500 rounded"></div>
+                        <span>Not Answered</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-blue-500 rounded"></div>
+                        <span>Current</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Study Guide Page -->
+        <div id="studyGuidePage" class="hidden space-y-8">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">NEET Study Guide</h2>
+                <p class="text-gray-600 text-lg">Master your preparation with proven strategies</p>
+            </div>
+            
+            <!-- Study Strategy Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Effective Study Methods -->
+                <div class="bg-white rounded-xl shadow-md p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-blue-100 p-3 rounded-full mr-4">
+                            <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800">Effective Study Methods</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-blue-500 pl-4">
+                            <h4 class="font-semibold text-gray-800 mb-2">Active Recall</h4>
+                            <p class="text-gray-600">Test yourself frequently without looking at notes. Use flashcards and practice questions to strengthen memory retention.</p>
+                        </div>
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <h4 class="font-semibold text-gray-800 mb-2">Spaced Repetition</h4>
+                            <p class="text-gray-600">Review topics at increasing intervals. Study new material today, review after 1 day, then 3 days, then 7 days.</p>
+                        </div>
+                        <div class="border-l-4 border-purple-500 pl-4">
+                            <h4 class="font-semibold text-gray-800 mb-2">Pomodoro Technique</h4>
+                            <p class="text-gray-600">Study for 25 minutes, then take a 5-minute break. After 4 cycles, take a longer 15-30 minute break.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Subject-wise Strategy -->
+                <div class="bg-white rounded-xl shadow-md p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-green-100 p-3 rounded-full mr-4">
+                            <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800">Subject-wise Strategy</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-800 mb-2">Physics</h4>
+                            <p class="text-blue-700 text-sm">Focus on numerical problems. Practice derivations and understand concepts through diagrams.</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-green-800 mb-2">Chemistry</h4>
+                            <p class="text-green-700 text-sm">Memorize reactions and formulas. Create mind maps for organic chemistry mechanisms.</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-purple-800 mb-2">Mathematics</h4>
+                            <p class="text-purple-700 text-sm">Practice daily. Focus on speed and accuracy. Learn shortcuts and formulas by heart.</p>
+                        </div>
+                        <div class="bg-red-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-red-800 mb-2">Biology</h4>
+                            <p class="text-red-700 text-sm">Use diagrams and flowcharts. Create acronyms for complex processes and classifications.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Time Management -->
+            <div class="bg-white rounded-xl shadow-md p-8">
+                <div class="flex items-center mb-6">
+                    <div class="bg-orange-100 p-3 rounded-full mr-4">
+                        <svg class="w-8 h-8 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800">Time Management & Daily Schedule</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-4">Ideal Daily Schedule</h4>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="font-medium">6:00 - 8:00 AM</span>
+                                <span class="text-blue-600">Physics</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="font-medium">8:30 - 10:30 AM</span>
+                                <span class="text-green-600">Chemistry</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="font-medium">11:00 - 1:00 PM</span>
+                                <span class="text-red-600">Biology</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="font-medium">2:00 - 4:00 PM</span>
+                                <span class="text-purple-600">Mathematics</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="font-medium">4:30 - 6:30 PM</span>
+                                <span class="text-gray-600">Revision & Tests</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-4">Weekly Goals</h4>
+                        <div class="space-y-3">
+                            <div class="p-4 border-l-4 border-blue-500 bg-blue-50">
+                                <p class="font-medium text-blue-800">Complete 2-3 chapters per subject</p>
+                                <p class="text-blue-600 text-sm">Focus on understanding concepts first</p>
+                            </div>
+                            <div class="p-4 border-l-4 border-green-500 bg-green-50">
+                                <p class="font-medium text-green-800">Solve 200+ practice questions</p>
+                                <p class="text-green-600 text-sm">Mix of easy, medium, and hard problems</p>
+                            </div>
+                            <div class="p-4 border-l-4 border-purple-500 bg-purple-50">
+                                <p class="font-medium text-purple-800">Take 3-4 mock tests</p>
+                                <p class="text-purple-600 text-sm">Analyze mistakes and improve weak areas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Exam Strategy -->
+            <div class="bg-white rounded-xl shadow-md p-8">
+                <div class="flex items-center mb-6">
+                    <div class="bg-red-100 p-3 rounded-full mr-4">
+                        <svg class="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800">NEET Exam Strategy</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
+                        <div class="text-3xl font-bold text-blue-600 mb-2">3 Hours</div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Time Management</h4>
+                        <p class="text-gray-600 text-sm">Biology: 90 min, Chemistry: 60 min, Physics: 50 min</p>
+                    </div>
+                    <div class="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-lg">
+                        <div class="text-3xl font-bold text-green-600 mb-2">+4, -1</div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Marking Scheme</h4>
+                        <p class="text-gray-600 text-sm">Attempt questions you're 70% confident about</p>
+                    </div>
+                    <div class="text-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg">
+                        <div class="text-3xl font-bold text-purple-600 mb-2">600+</div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Target Score</h4>
+                        <p class="text-gray-600 text-sm">Aim for 150+ in each subject for top colleges</p>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <h4 class="font-semibold text-yellow-800 mb-3">💡 Pro Tips for Exam Day</h4>
+                    <ul class="space-y-2 text-yellow-700">
+                        <li>• Start with Biology (highest weightage and easier to score)</li>
+                        <li>• Skip difficult questions initially, come back later</li>
+                        <li>• Keep track of time - don't spend more than 1.5 minutes per question</li>
+                        <li>• Review your answers in the last 10 minutes</li>
+                        <li>• Stay calm and trust your preparation</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Motivation Section -->
+            <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl shadow-md p-8 text-white">
+                <div class="text-center">
+                    <h3 class="text-3xl font-bold mb-4">Stay Motivated! 🚀</h3>
+                    <p class="text-xl mb-6 opacity-90">
+                        "Success is not final, failure is not fatal: it is the courage to continue that counts."
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">🎯</div>
+                            <h4 class="font-semibold mb-2">Set Clear Goals</h4>
+                            <p class="text-sm opacity-80">Define your target college and work backwards</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">📈</div>
+                            <h4 class="font-semibold mb-2">Track Progress</h4>
+                            <p class="text-sm opacity-80">Regular tests help identify weak areas</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">💪</div>
+                            <h4 class="font-semibold mb-2">Stay Consistent</h4>
+                            <p class="text-sm opacity-80">Small daily efforts lead to big results</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Page -->
+        <div id="resultsPage" class="hidden space-y-8">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Test Results & Analytics</h2>
+                <p class="text-gray-600 text-lg">Track your progress and analyze your performance</p>
+            </div>
+            
+            <!-- Results Filter and Stats -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <div class="mb-4 md:mb-0">
+                        <h3 class="text-xl font-bold text-gray-800">All Test Results</h3>
+                        <p class="text-gray-600" id="resultsCount">Showing 0 results</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <select id="subjectFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                            <option value="">All Subjects</option>
+                            <option value="physics">Physics</option>
+                            <option value="chemistry">Chemistry</option>
+                            <option value="math">Mathematics</option>
+                            <option value="biology">Biology</option>
+                        </select>
+                        <select id="sortFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="highest">Highest Score</option>
+                            <option value="lowest">Lowest Score</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Results List -->
+                <div id="resultsList" class="space-y-4">
+                    <!-- Results will be populated here -->
+                </div>
+                
+                <!-- Pagination -->
+                <div id="resultsPagination" class="flex justify-center items-center space-x-4 mt-8">
+                    <!-- Pagination will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Completion Results Section -->
+        <div id="resultsSection" class="hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-md p-8 text-center">
+                <div class="mb-6">
+                    <div class="bg-green-100 p-4 rounded-full w-20 h-20 mx-auto mb-4">
+                        <svg class="w-12 h-12 text-green-600 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-800">Test Completed!</h2>
+                    <p class="text-gray-600 mt-2">Great job! Here's your performance summary</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <p class="text-3xl font-bold text-blue-600" id="finalScore">0</p>
+                        <p class="text-gray-600">Total Score</p>
+                    </div>
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <p class="text-3xl font-bold text-green-600" id="correctAnswers">0</p>
+                        <p class="text-gray-600">Correct</p>
+                    </div>
+                    <div class="bg-red-50 p-6 rounded-lg">
+                        <p class="text-3xl font-bold text-red-600" id="incorrectAnswers">0</p>
+                        <p class="text-gray-600">Incorrect</p>
+                    </div>
+                    <div class="bg-yellow-50 p-6 rounded-lg">
+                        <p class="text-3xl font-bold text-yellow-600" id="unanswered">0</p>
+                        <p class="text-gray-600">Unanswered</p>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <p class="text-gray-600 text-center">
+                        Redirecting to dashboard in <span id="redirectCountdown" class="font-bold text-blue-600">5</span> seconds...
+                    </p>
+                </div>
+                
+                <div class="flex justify-center space-x-4">
+                    <button onclick="showDashboard()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium">
+                        Back to Dashboard
+                    </button>
+                    <button onclick="downloadAnswerSheet()" class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium">
+                        Download Answer Sheet
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Count Modal -->
+    <div id="questionModal" class="modal">
+        <div class="bg-white rounded-xl shadow-xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6" id="modalTitle">Select Question Count</h3>
+            <p class="text-gray-600 mb-6" id="modalSubtitle">How many questions would you like to attempt?</p>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <button onclick="startChapterTest(30)" class="bg-blue-100 hover:bg-blue-200 text-blue-800 py-4 rounded-lg font-medium">
+                    30 Questions
+                </button>
+                <button onclick="startChapterTest(50)" class="bg-green-100 hover:bg-green-200 text-green-800 py-4 rounded-lg font-medium">
+                    50 Questions
+                </button>
+                <button onclick="startChapterTest(100)" class="bg-purple-100 hover:bg-purple-200 text-purple-800 py-4 rounded-lg font-medium">
+                    100 Questions
+                </button>
+                <button onclick="openCustomQuestionModal()" class="bg-orange-100 hover:bg-orange-200 text-orange-800 py-4 rounded-lg font-medium">
+                    Custom
+                </button>
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-lg font-medium">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Question Count Modal -->
+    <div id="customQuestionModal" class="modal">
+        <div class="bg-white rounded-xl shadow-xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">Custom Question Count</h3>
+            <p class="text-gray-600 mb-6">Enter the number of questions you want to attempt:</p>
+            
+            <div class="mb-6">
+                <input type="number" id="customQuestionCount" min="1" max="200" placeholder="Enter number (1-200)" 
+                       class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-center text-lg font-medium">
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeCustomModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-lg font-medium">
+                    Cancel
+                </button>
+                <button onclick="startCustomTest()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium">
+                    Start Test
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Study Streak Congratulation Modal -->
+    <div id="streakCongratulationModal" class="modal">
+        <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-2xl p-8 max-w-lg w-full mx-4 border-2 border-yellow-200">
+            <div class="text-center">
+                <div class="text-6xl mb-4">🎉</div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Congratulations!</h2>
+                <div class="bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-6 py-3 rounded-full inline-block mb-6">
+                    <p class="text-lg font-bold">21-Day Study Streak Completed!</p>
+                </div>
+                
+                <div class="text-left bg-white p-6 rounded-lg shadow-inner mb-6">
+                    <p class="text-gray-700 leading-relaxed mb-4">
+                        <strong>You've successfully completed a 21-day study streak!</strong>
+                    </p>
+                    <p class="text-gray-700 leading-relaxed mb-4">
+                        Your dedication, discipline, and consistency are truly commendable.
+                        This kind of effort brings real results. Keep the momentum going—your goals are getting closer every day!
+                    </p>
+                    <p class="text-gray-700 leading-relaxed font-semibold">
+                        Keep learning. Keep growing. You've got this! 💪
+                    </p>
+                </div>
+                
+                <button onclick="closeStreakModal()" class="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-8 py-3 rounded-lg font-bold text-lg transition-all transform hover:scale-105">
+                    Continue Learning! 🚀
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        // Global variables
+        let currentQuestionIndex = 0;
+        let totalQuestions = 30;
+        let selectedAnswers = {};
+        let markedForReview = new Set();
+        let timeRemaining = 45 * 60; // 45 minutes in seconds
+        let timerInterval;
+        let currentSubject = '';
+        let currentChapter = '';
+        let currentTestQuestions = [];
+        let testResults = [];
+        let wrongAnswerQuestions = []; // Store questions answered incorrectly for random pickup
+        let studentId = 'student_' + Math.random().toString(36).substr(2, 9); // Generate unique student ID
+        let recentTests = []; // Store only 3 most recent tests
+        let performanceHistory = {}; // Track performance improvements
+        let studyStreak = {
+            currentStreak: 0,
+            lastTestDate: null,
+            longestStreak: 0,
+            streakDates: [],
+            congratulationShown: false
+        }; // Track study streak
+
+        // Today's test tracking
+        let todayTest = {
+            date: null,
+            totalScore: 0,
+            totalQuestions: 0,
+            totalCorrect: 0,
+            testsCompleted: 0,
+            accuracy: 0
+        };
+
+        // Highest marks tracking
+        let highestMarks = {
+            score: 0,
+            maxPossible: 0,
+            percentage: 0,
+            date: null,
+            subject: null,
+            chapter: null
+        };
+
+        // Test security variables
+        let isTestActive = false;
+
+
+
+        // Results page pagination
+        let currentResultsPage = 1;
+        let resultsPerPage = 10;
+        let filteredResults = [];
+
+        // Persistent data storage
+        const STORAGE_KEYS = {
+            TEST_RESULTS: 'neet_test_results',
+            WRONG_ANSWERS: 'neet_wrong_answers',
+            STUDENT_DATA: 'neet_student_data',
+            PERFORMANCE_HISTORY: 'neet_performance_history',
+            STUDY_STREAK: 'neet_study_streak',
+            TODAY_TEST: 'neet_today_test',
+            HIGHEST_MARKS: 'neet_highest_marks',
+            RECENT_TESTS: 'neet_recent_tests'
+        };
+
+        // Chapter data for each subject
+        const chaptersData = {
+            physics: [
+                'Mechanics', 'Thermodynamics', 'Waves and Oscillations', 'Optics', 
+                'Electricity and Magnetism', 'Modern Physics', 'Atomic Structure', 
+                'Nuclear Physics', 'Electromagnetic Waves', 'Dual Nature of Matter'
+            ],
+            chemistry: [
+                'Atomic Structure', 'Chemical Bonding', 'Thermodynamics', 'Chemical Equilibrium',
+                'Ionic Equilibrium', 'Electrochemistry', 'Chemical Kinetics', 'Surface Chemistry',
+                'Organic Chemistry Basics', 'Hydrocarbons', 'Organic Compounds with Functional Groups',
+                'Biomolecules', 'Polymers', 'Chemistry in Everyday Life'
+            ],
+            math: [
+                'Sets and Functions', 'Algebra', 'Coordinate Geometry', 'Calculus',
+                'Mathematical Reasoning', 'Statistics and Probability', 'Trigonometry',
+                'Sequences and Series', 'Permutations and Combinations', 'Binomial Theorem',
+                'Limits and Derivatives', 'Integrals', 'Differential Equations', 'Vector Algebra'
+            ],
+            biology: [
+                'The Living World', 'Biological Classification', 'Plant Kingdom', 'Animal Kingdom',
+                'Morphology of Flowering Plants', 'Anatomy of Flowering Plants', 'Structural Organisation in Animals',
+                'Cell Structure and Function', 'Biomolecules', 'Cell Cycle and Division',
+                'Transport in Plants', 'Mineral Nutrition', 'Photosynthesis', 'Respiration in Plants',
+                'Plant Growth and Development', 'Digestion and Absorption', 'Breathing and Exchange of Gases',
+                'Body Fluids and Circulation', 'Excretory Products', 'Locomotion and Movement',
+                'Neural Control and Coordination', 'Chemical Coordination', 'Reproduction in Organisms',
+                'Sexual Reproduction in Plants', 'Human Reproduction', 'Reproductive Health'
+            ]
+        };
+
+        // Real questions database for first chapters
+        const questionsDatabase = {
+            physics: {
+                'Mechanics': [
+                    {
+                        question: "A particle moves in a straight line with constant acceleration. If it covers 20m in the first 4 seconds and 60m in the next 4 seconds, what is its acceleration?",
+                        options: ["2.5 m/s²", "5.0 m/s²", "7.5 m/s²", "10.0 m/s²"],
+                        correct: "A",
+                        explanation: "Using kinematic equations: s = ut + ½at². For first 4s: 20 = 4u + 8a. For next 4s: 60 = 4(u+4a) + 8a. Solving: a = 2.5 m/s²"
+                    },
+                    {
+                        question: "The coefficient of friction between a block and inclined plane is μ = 0.5. What is the maximum angle of inclination for which the block will not slide?",
+                        options: ["30°", "45°", "26.57°", "60°"],
+                        correct: "C",
+                        explanation: "For equilibrium: tan θ = μ. Therefore θ = tan⁻¹(0.5) = 26.57°"
+                    },
+                    {
+                        question: "A ball is thrown vertically upward with initial velocity 20 m/s. What is the maximum height reached? (g = 10 m/s²)",
+                        options: ["10 m", "20 m", "30 m", "40 m"],
+                        correct: "B",
+                        explanation: "Using v² = u² - 2gh, at maximum height v = 0. So 0 = 400 - 20h, h = 20 m"
+                    },
+                    {
+                        question: "Two forces of 3N and 4N act at right angles to each other. The magnitude of their resultant is:",
+                        options: ["7 N", "5 N", "1 N", "12 N"],
+                        correct: "B",
+                        explanation: "For perpendicular forces, resultant = √(3² + 4²) = √(9 + 16) = √25 = 5 N"
+                    },
+                    {
+                        question: "A car accelerates from rest at 2 m/s² for 10 seconds. The distance covered is:",
+                        options: ["20 m", "100 m", "200 m", "400 m"],
+                        correct: "B",
+                        explanation: "Using s = ut + ½at², where u = 0, a = 2 m/s², t = 10s. s = 0 + ½(2)(100) = 100 m"
+                    }
+                ]
+            },
+            chemistry: {
+                'Atomic Structure': [
+                    {
+                        question: "Which of the following quantum numbers determines the shape of an orbital?",
+                        options: ["Principal quantum number (n)", "Azimuthal quantum number (l)", "Magnetic quantum number (m)", "Spin quantum number (s)"],
+                        correct: "B",
+                        explanation: "The azimuthal quantum number (l) determines the shape of the orbital. l=0 (s-orbital), l=1 (p-orbital), l=2 (d-orbital), etc."
+                    },
+                    {
+                        question: "The maximum number of electrons in a shell with principal quantum number n is:",
+                        options: ["n²", "2n²", "2n", "n"],
+                        correct: "B",
+                        explanation: "Maximum electrons in nth shell = 2n². For n=1: 2 electrons, n=2: 8 electrons, n=3: 18 electrons"
+                    },
+                    {
+                        question: "The electronic configuration of Cr (Z=24) is:",
+                        options: ["[Ar] 3d⁴ 4s²", "[Ar] 3d⁵ 4s¹", "[Ar] 3d⁶", "[Ar] 4s² 3d⁴"],
+                        correct: "B",
+                        explanation: "Chromium shows exceptional configuration [Ar] 3d⁵ 4s¹ for extra stability due to half-filled d orbital"
+                    },
+                    {
+                        question: "Which scientist proposed the planetary model of atom?",
+                        options: ["Thomson", "Rutherford", "Bohr", "Dalton"],
+                        correct: "B",
+                        explanation: "Rutherford proposed the planetary model where electrons revolve around a central nucleus"
+                    },
+                    {
+                        question: "The energy of an electron in hydrogen atom is given by:",
+                        options: ["13.6/n² eV", "-13.6/n² eV", "13.6n² eV", "-13.6n² eV"],
+                        correct: "B",
+                        explanation: "Energy of electron in nth orbit of hydrogen = -13.6/n² eV (negative indicates bound state)"
+                    }
+                ]
+            },
+            math: {
+                'Sets and Functions': [
+                    {
+                        question: "If A = {1, 2, 3} and B = {2, 3, 4}, then A ∩ B is:",
+                        options: ["{1, 2, 3, 4}", "{2, 3}", "{1}", "{4}"],
+                        correct: "B",
+                        explanation: "The intersection A ∩ B contains elements common to both sets A and B, which are {2, 3}."
+                    },
+                    {
+                        question: "If A = {1, 2, 3, 4} and B = {3, 4, 5, 6}, then A ∪ B is:",
+                        options: ["{1, 2, 3, 4, 5, 6}", "{3, 4}", "{1, 2}", "{5, 6}"],
+                        correct: "A",
+                        explanation: "The union A ∪ B contains all elements from both sets: {1, 2, 3, 4, 5, 6}"
+                    },
+                    {
+                        question: "The range of function f(x) = x² is:",
+                        options: ["R", "[0, ∞)", "(-∞, 0]", "(0, ∞)"],
+                        correct: "B",
+                        explanation: "Since x² ≥ 0 for all real x, the range is [0, ∞)"
+                    },
+                    {
+                        question: "If f(x) = 2x + 3, then f⁻¹(x) is:",
+                        options: ["(x - 3)/2", "(x + 3)/2", "2x - 3", "x/2 - 3"],
+                        correct: "A",
+                        explanation: "Let y = 2x + 3, then x = (y - 3)/2. So f⁻¹(x) = (x - 3)/2"
+                    },
+                    {
+                        question: "The domain of f(x) = √(x - 2) is:",
+                        options: ["R", "[2, ∞)", "(-∞, 2]", "(2, ∞)"],
+                        correct: "B",
+                        explanation: "For √(x - 2) to be real, we need x - 2 ≥ 0, so x ≥ 2. Domain is [2, ∞)"
+                    }
+                ]
+            },
+            biology: {
+                'The Living World': [
+                    {
+                        question: "The basic unit of classification is:",
+                        options: ["Kingdom", "Phylum", "Species", "Genus"],
+                        correct: "C",
+                        explanation: "Species is the basic unit of classification. It represents a group of organisms that can interbreed and produce fertile offspring."
+                    },
+                    {
+                        question: "Binomial nomenclature was given by:",
+                        options: ["Darwin", "Linnaeus", "Mendel", "Watson"],
+                        correct: "B",
+                        explanation: "Carolus Linnaeus introduced the binomial nomenclature system for naming organisms"
+                    },
+                    {
+                        question: "The scientific name of human is:",
+                        options: ["Homo erectus", "Homo habilis", "Homo sapiens", "Homo neanderthalensis"],
+                        correct: "C",
+                        explanation: "The scientific name of modern humans is Homo sapiens"
+                    },
+                    {
+                        question: "Taxonomy is the science of:",
+                        options: ["Classification", "Nomenclature", "Identification", "All of the above"],
+                        correct: "D",
+                        explanation: "Taxonomy includes classification, nomenclature, and identification of organisms"
+                    },
+                    {
+                        question: "The term 'biodiversity' was coined by:",
+                        options: ["E.O. Wilson", "Walter Rosen", "Darwin", "Linnaeus"],
+                        correct: "B",
+                        explanation: "Walter Rosen coined the term 'biodiversity' in 1985"
+                    }
+                ]
+            }
+        };
+
+        // Load persistent data
+        function loadPersistentData() {
+            try {
+                const savedResults = localStorage.getItem(STORAGE_KEYS.TEST_RESULTS);
+                if (savedResults) {
+                    testResults = JSON.parse(savedResults);
+                    console.log('Loaded test results:', testResults.length, 'tests');
+                }
+
+                const savedWrongAnswers = localStorage.getItem(STORAGE_KEYS.WRONG_ANSWERS);
+                if (savedWrongAnswers) {
+                    wrongAnswerQuestions = JSON.parse(savedWrongAnswers);
+                }
+
+                const savedStudentData = localStorage.getItem(STORAGE_KEYS.STUDENT_DATA);
+                if (savedStudentData) {
+                    const studentData = JSON.parse(savedStudentData);
+                    studentId = studentData.id;
+                }
+
+                const savedPerformanceHistory = localStorage.getItem(STORAGE_KEYS.PERFORMANCE_HISTORY);
+                if (savedPerformanceHistory) {
+                    performanceHistory = JSON.parse(savedPerformanceHistory);
+                }
+
+                const savedStudyStreak = localStorage.getItem(STORAGE_KEYS.STUDY_STREAK);
+                if (savedStudyStreak) {
+                    studyStreak = JSON.parse(savedStudyStreak);
+                }
+
+                const savedTodayTest = localStorage.getItem(STORAGE_KEYS.TODAY_TEST);
+                if (savedTodayTest) {
+                    todayTest = JSON.parse(savedTodayTest);
+                    console.log('Loaded today test data:', todayTest);
+                } else {
+                    console.log('No saved today test data found');
+                }
+                
+                // Always check and reset if it's a new day
+                checkAndResetTodayData();
+
+                const savedHighestMarks = localStorage.getItem(STORAGE_KEYS.HIGHEST_MARKS);
+                if (savedHighestMarks) {
+                    highestMarks = JSON.parse(savedHighestMarks);
+                }
+
+                const savedRecentTests = localStorage.getItem(STORAGE_KEYS.RECENT_TESTS);
+                if (savedRecentTests) {
+                    recentTests = JSON.parse(savedRecentTests);
+                    console.log('Loaded recent tests:', recentTests.length, 'tests');
+                } else {
+                    // If no recent tests saved, rebuild from test results
+                    if (testResults.length > 0) {
+                        console.log('Rebuilding recent tests from test results');
+                        rebuildRecentTestsFromResults();
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error loading persistent data:', error);
+                // Reset corrupted data
+                testResults = [];
+                recentTests = [];
+                wrongAnswerQuestions = [];
+                performanceHistory = {};
+                resetTodayTestData();
+                resetHighestMarks();
+                resetStudyStreak();
+            }
+        }
+
+        // Save persistent data
+        function savePersistentData() {
+            try {
+                localStorage.setItem(STORAGE_KEYS.TEST_RESULTS, JSON.stringify(testResults));
+                localStorage.setItem(STORAGE_KEYS.WRONG_ANSWERS, JSON.stringify(wrongAnswerQuestions));
+                localStorage.setItem(STORAGE_KEYS.STUDENT_DATA, JSON.stringify({
+                    id: studentId,
+                    name: 'Student'
+                }));
+                localStorage.setItem(STORAGE_KEYS.PERFORMANCE_HISTORY, JSON.stringify(performanceHistory));
+                localStorage.setItem(STORAGE_KEYS.STUDY_STREAK, JSON.stringify(studyStreak));
+                localStorage.setItem(STORAGE_KEYS.TODAY_TEST, JSON.stringify(todayTest));
+                localStorage.setItem(STORAGE_KEYS.HIGHEST_MARKS, JSON.stringify(highestMarks));
+                localStorage.setItem(STORAGE_KEYS.RECENT_TESTS, JSON.stringify(recentTests));
+                console.log('Data saved successfully. Recent tests:', recentTests.length);
+            } catch (error) {
+                console.error('Error saving persistent data:', error);
+                // Try to save critical data individually
+                try {
+                    localStorage.setItem(STORAGE_KEYS.TEST_RESULTS, JSON.stringify(testResults));
+                    localStorage.setItem(STORAGE_KEYS.RECENT_TESTS, JSON.stringify(recentTests));
+                } catch (criticalError) {
+                    console.error('Critical data save failed:', criticalError);
+                }
+            }
+        }
+
+        // Rebuild recent tests from test results if missing
+        function rebuildRecentTestsFromResults() {
+            if (testResults.length > 0) {
+                // Sort by timestamp (newest first) and take last 3
+                const sortedResults = [...testResults].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                recentTests = sortedResults.slice(0, 3);
+                console.log('Rebuilt recent tests:', recentTests.length, 'tests');
+                savePersistentData(); // Save the rebuilt data
+            }
+        }
+
+        // Reset functions for corrupted data
+        function resetHighestMarks() {
+            highestMarks = {
+                score: 0,
+                maxPossible: 0,
+                percentage: 0,
+                date: null,
+                subject: null,
+                chapter: null
+            };
+        }
+
+        function resetStudyStreak() {
+            studyStreak = {
+                currentStreak: 0,
+                lastTestDate: null,
+                longestStreak: 0,
+                streakDates: [],
+                congratulationShown: false
+            };
+        }
+
+        // Multiple save triggers to prevent data loss
+        window.addEventListener('beforeunload', function(e) {
+            savePersistentData();
+            console.log('Data saved on beforeunload');
+        });
+
+        // Save on page unload
+        window.addEventListener('unload', function() {
+            savePersistentData();
+            console.log('Data saved on unload');
+        });
+
+        // Save on page hide (mobile/tab switching)
+        window.addEventListener('pagehide', function() {
+            savePersistentData();
+            console.log('Data saved on pagehide');
+        });
+
+        // Auto-save every 3 seconds for better persistence
+        setInterval(() => {
+            savePersistentData();
+            console.log('Auto-save completed');
+        }, 3000);
+
+        // Check for new day every minute and reset today's data if needed
+        setInterval(() => {
+            const wasReset = checkAndResetTodayData();
+            if (wasReset) {
+                console.log('Day changed detected, updating dashboard...');
+                updateDashboardStats();
+                updateRecentTestHistory();
+                savePersistentData(); // Save after day reset
+            }
+        }, 60000); // Check every minute
+
+        // Save data on page visibility change
+        document.addEventListener('visibilitychange', function() {
+            savePersistentData();
+            console.log('Data saved on visibility change');
+        });
+
+        // Save data when window loses focus
+        window.addEventListener('blur', function() {
+            savePersistentData();
+            console.log('Data saved on blur');
+        });
+
+        // Save data when window gains focus (in case data was lost)
+        window.addEventListener('focus', function() {
+            // Verify data integrity and reload if necessary
+            const testCheck = localStorage.getItem(STORAGE_KEYS.TEST_RESULTS);
+            if (!testCheck && testResults.length > 0) {
+                console.log('Data loss detected, attempting recovery...');
+                savePersistentData();
+            }
+        });
+
+        // Reset today's test data for new day
+        function resetTodayTestData() {
+            const today = new Date().toDateString();
+            todayTest = {
+                date: today,
+                totalScore: 0,
+                totalQuestions: 0,
+                totalCorrect: 0,
+                testsCompleted: 0,
+                accuracy: 0
+            };
+            console.log('Today test data reset for new day:', today);
+        }
+
+        // Check if it's a new day and reset if needed
+        function checkAndResetTodayData() {
+            const today = new Date().toDateString();
+            
+            // If no date set or it's a different day, reset
+            if (!todayTest.date || todayTest.date !== today) {
+                console.log('New day detected. Previous date:', todayTest.date, 'Today:', today);
+                resetTodayTestData();
+                savePersistentData(); // Save the reset immediately
+                return true; // Indicates data was reset
+            }
+            return false; // No reset needed
+        }
+
+        // Update today's test data
+        function updateTodayTestData(testResult) {
+            // Always check for new day before updating
+            checkAndResetTodayData();
+            
+            // Update today's cumulative data
+            todayTest.totalScore += testResult.netMarks;
+            todayTest.totalQuestions += testResult.totalQuestions;
+            todayTest.totalCorrect += testResult.correct;
+            todayTest.testsCompleted += 1;
+            todayTest.accuracy = todayTest.totalQuestions > 0 ? 
+                Math.round((todayTest.totalCorrect / todayTest.totalQuestions) * 100) : 0;
+            
+            console.log('Today test data updated:', todayTest);
+        }
+
+        // Update highest marks if new record
+        function updateHighestMarks(testResult) {
+            const percentage = testResult.maxPossibleMarks > 0 ? 
+                (testResult.netMarks / testResult.maxPossibleMarks) * 100 : 0;
+            
+            if (testResult.netMarks > highestMarks.score || 
+                (testResult.netMarks === highestMarks.score && percentage > highestMarks.percentage)) {
+                highestMarks = {
+                    score: testResult.netMarks,
+                    maxPossible: testResult.maxPossibleMarks,
+                    percentage: Math.round(percentage),
+                    date: testResult.date,
+                    subject: testResult.subject,
+                    chapter: testResult.chapter
+                };
+            }
+        }
+
+        // Update recent tests (keep only 3 most recent)
+        function updateRecentTests(testResult) {
+            // Add new test to beginning of array
+            recentTests.unshift(testResult);
+            
+            // Keep only 3 most recent tests
+            if (recentTests.length > 3) {
+                recentTests = recentTests.slice(0, 3);
+            }
+        }
+
+        // Show study guide
+        function showStudyGuide() {
+            // Disable test security if active
+            if (isTestActive) {
+                disableTestSecurity();
+            }
+            
+            hideAllSections();
+            document.getElementById('studyGuidePage').classList.remove('hidden');
+            updateNavButtons('studyGuide');
+            stopTimer();
+        }
+
+        // Test security functions
+        function enableTestSecurity() {
+            isTestActive = true;
+            
+            // Add test-mode class to body
+            document.body.classList.add('test-mode');
+            
+            // Disable header navigation during test
+            const header = document.querySelector('header');
+            if (header) {
+                header.classList.add('header-disabled');
+            }
+            
+            // Disable right-click context menu
+            document.addEventListener('contextmenu', preventContextMenu);
+            
+            // Disable common keyboard shortcuts
+            document.addEventListener('keydown', preventKeyboardShortcuts);
+            
+            console.log('Test security enabled');
+        }
+
+        function disableTestSecurity() {
+            isTestActive = false;
+            
+            // Remove test-mode class from body
+            document.body.classList.remove('test-mode');
+            
+            // Re-enable header navigation
+            const header = document.querySelector('header');
+            if (header) {
+                header.classList.remove('header-disabled');
+            }
+            
+            // Re-enable right-click context menu
+            document.removeEventListener('contextmenu', preventContextMenu);
+            
+            // Re-enable keyboard shortcuts
+            document.removeEventListener('keydown', preventKeyboardShortcuts);
+            
+            console.log('Test security disabled');
+        }
+
+        function preventContextMenu(e) {
+            if (isTestActive) {
+                e.preventDefault();
+                return false;
+            }
+        }
+
+        function preventKeyboardShortcuts(e) {
+            if (!isTestActive) return;
+            
+            // Prevent common shortcuts
+            if (
+                (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'a' || e.key === 's' || e.key === 'p' || e.key === 'u')) ||
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                e.key === 'F12' ||
+                (e.ctrlKey && e.key === 'F12') ||
+                (e.altKey && e.key === 'Tab')
+            ) {
+                e.preventDefault();
+                return false;
+            }
+        }
+
+        // Initialize the application
+        function init() {
+            console.log('Initializing application...');
+            
+            // Load all persistent data
+            loadPersistentData();
+            
+            // Verify data integrity after loading
+            console.log('Data verification:');
+            console.log('- Test results:', testResults.length, 'tests');
+            console.log('- Recent tests:', recentTests.length, 'tests');
+            console.log('- Today test data:', todayTest);
+            console.log('- Highest marks:', highestMarks);
+            console.log('- Study streak:', studyStreak);
+            
+            // Check streak validity on page load
+            checkStreakOnLoad();
+            
+            // Ensure today's data is properly initialized
+            checkAndResetTodayData();
+            
+            // Show dashboard and update all displays
+            showDashboard();
+            updateDashboardStats();
+            updateRecentTestHistory();
+            updateStudyStreakDisplay();
+            
+            // Save data immediately after initialization to ensure persistence
+            savePersistentData();
+            
+            console.log('Application initialized successfully');
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            // Disable test security if active
+            if (isTestActive) {
+                disableTestSecurity();
+            }
+            
+            hideAllSections();
+            document.getElementById('dashboard').classList.remove('hidden');
+            updateNavButtons('dashboard');
+            stopTimer();
+        }
+
+        // Show test series page
+        function showTestSeries() {
+            // Disable test security if active
+            if (isTestActive) {
+                disableTestSecurity();
+            }
+            
+            hideAllSections();
+            document.getElementById('testSeriesPage').classList.remove('hidden');
+            updateNavButtons('testSeries');
+            stopTimer();
+            populateAllChapters();
+        }
+
+        // Show results page
+        function showResults() {
+            // Disable test security if active
+            if (isTestActive) {
+                disableTestSecurity();
+            }
+            
+            hideAllSections();
+            document.getElementById('resultsPage').classList.remove('hidden');
+            updateNavButtons('results');
+            stopTimer();
+            
+            // Setup filter event listeners
+            setupResultsFilters();
+            
+            // Load and display results
+            loadResultsPage();
+        }
+
+        // Hide all sections
+        function hideAllSections() {
+            const sections = ['dashboard', 'testSeriesPage', 'chaptersPage', 'testInterface', 'resultsSection', 'resultsPage', 'studyGuidePage'];
+            sections.forEach(section => {
+                document.getElementById(section).classList.add('hidden');
+            });
+        }
+
+        // Update navigation button states
+        function updateNavButtons(activePage) {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('bg-white', 'bg-opacity-20');
+            });
+            
+            const pageMap = {
+                'dashboard': 0,
+                'testSeries': 1,
+                'results': 2,
+                'studyGuide': 3
+            };
+            
+            if (pageMap[activePage] !== undefined) {
+                navButtons[pageMap[activePage]].classList.add('bg-white', 'bg-opacity-20');
+            }
+        }
+
+        // Populate all chapters in columns
+        function populateAllChapters() {
+            const subjects = ['physics', 'chemistry', 'math', 'biology'];
+            const subjectColors = {
+                physics: 'blue',
+                chemistry: 'green',
+                math: 'purple',
+                biology: 'red'
+            };
+            
+            subjects.forEach(subject => {
+                const container = document.getElementById(subject + 'Chapters');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                const chapters = chaptersData[subject] || [];
+                
+                chapters.forEach((chapter, index) => {
+                    const chapterButton = document.createElement('button');
+                    const hasRealQuestions = index === 0; // First chapter has real questions
+                    
+                    chapterButton.className = `w-full text-left p-3 rounded-lg hover:bg-${subjectColors[subject]}-50 hover:text-${subjectColors[subject]}-700 transition-colors text-sm text-gray-700 border border-gray-200 hover:border-${subjectColors[subject]}-300 ${hasRealQuestions ? 'border-l-4 border-l-' + subjectColors[subject] + '-500' : ''}`;
+                    
+                    chapterButton.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <span>${chapter}</span>
+                            ${hasRealQuestions ? '<span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Real Q\'s</span>' : ''}
+                        </div>
+                    `;
+                    
+                    chapterButton.onclick = () => selectChapter(subject, chapter);
+                    container.appendChild(chapterButton);
+                });
+            });
+        }
+
+        // Select chapter and show question count modal
+        function selectChapter(subject, chapter) {
+            currentSubject = subject;
+            currentChapter = chapter;
+            document.getElementById('modalTitle').textContent = `${currentChapter} Test`;
+            document.getElementById('modalSubtitle').textContent = 
+                `How many questions would you like to attempt from ${currentChapter}?`;
+            document.getElementById('questionModal').classList.add('show');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('questionModal').classList.remove('show');
+        }
+
+        // Open custom question modal
+        function openCustomQuestionModal() {
+            closeModal();
+            document.getElementById('customQuestionModal').classList.add('show');
+            document.getElementById('customQuestionCount').focus();
+        }
+
+        // Close custom modal
+        function closeCustomModal() {
+            document.getElementById('customQuestionModal').classList.remove('show');
+            document.getElementById('customQuestionCount').value = '';
+        }
+
+        // Start custom test
+        function startCustomTest() {
+            const customCount = parseInt(document.getElementById('customQuestionCount').value);
+            if (customCount && customCount >= 1 && customCount <= 200) {
+                closeCustomModal();
+                startChapterTest(customCount);
+            } else {
+                alert('Please enter a valid number between 1 and 200');
+            }
+        }
+
+        // Start chapter test with specified question count
+        function startChapterTest(questionCount) {
+            closeModal();
+            
+            totalQuestions = questionCount;
+            currentQuestionIndex = 0;
+            selectedAnswers = {};
+            markedForReview = new Set();
+            timeRemaining = questionCount * 90; // 1.5 minutes per question
+            
+            // Generate questions for the test
+            generateTestQuestions();
+            
+            hideAllSections();
+            document.getElementById('testInterface').classList.remove('hidden');
+            
+            document.getElementById('testTitle').textContent = 
+                `${currentSubject.charAt(0).toUpperCase() + currentSubject.slice(1)} - ${currentChapter}`;
+            document.getElementById('totalQuestions').textContent = totalQuestions;
+            
+            generateQuestionNavigation();
+            loadQuestion();
+            startTimer();
+            
+            // Enable test security
+            enableTestSecurity();
+        }
+
+        // Generate test questions with randomization
+        function generateTestQuestions() {
+            const chapterQuestions = questionsDatabase[currentSubject]?.[currentChapter] || [];
+            currentTestQuestions = [];
+            
+            // Create a pool of questions including wrong answer pickups
+            let questionPool = [...chapterQuestions];
+            
+            // Add previously wrong questions for random pickup
+            const wrongFromThisChapter = wrongAnswerQuestions.filter(q => 
+                q.subject === currentSubject && q.chapter === currentChapter
+            );
+            questionPool = questionPool.concat(wrongFromThisChapter.map(q => q.question));
+            
+            // If we have enough questions in pool, randomly select them
+            if (questionPool.length >= totalQuestions) {
+                // Shuffle and select random questions
+                const shuffled = shuffleArray([...questionPool]);
+                currentTestQuestions = shuffled.slice(0, totalQuestions);
+            } else {
+                // Use all available questions - limit test to available questions only
+                currentTestQuestions = [...questionPool];
+                
+                // If we don't have enough questions, limit the test to available questions
+                if (currentTestQuestions.length < totalQuestions) {
+                    totalQuestions = Math.max(currentTestQuestions.length, 1);
+                    document.getElementById('totalQuestions').textContent = totalQuestions;
+                    
+                    // Show message if chapter has no real questions
+                    if (currentTestQuestions.length === 0) {
+                        alert(`Sorry, ${currentChapter} doesn't have questions available yet. Please select a chapter with real questions (marked with "Real Q's").`);
+                        return;
+                    }
+                }
+            }
+            
+            // Final shuffle to randomize order
+            currentTestQuestions = shuffleArray(currentTestQuestions);
+        }
+
+        // Shuffle array function
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Generate sample question (fallback) - Only for chapters with real questions
+        function generateSampleQuestion(subject, chapter, questionNumber) {
+            // Only generate if we have real questions for this chapter
+            const chapterQuestions = questionsDatabase[subject]?.[chapter] || [];
+            if (chapterQuestions.length === 0) {
+                return null; // Don't generate sample questions
+            }
+            
+            // Return a variation of existing real questions
+            const baseQuestion = chapterQuestions[questionNumber % chapterQuestions.length];
+            return {
+                question: baseQuestion.question,
+                options: baseQuestion.options,
+                correct: baseQuestion.correct,
+                explanation: baseQuestion.explanation
+            };
+        }
+
+        // Generate question navigation
+        function generateQuestionNavigation() {
+            const nav = document.getElementById('questionNav');
+            nav.innerHTML = '';
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'w-8 h-8 rounded text-sm font-medium bg-red-500 text-white hover:bg-red-600';
+                btn.textContent = i;
+                btn.onclick = () => goToQuestion(i - 1);
+                nav.appendChild(btn);
+            }
+            
+            updateQuestionNavigation();
+        }
+
+        // Update question navigation colors
+        function updateQuestionNavigation() {
+            const nav = document.getElementById('questionNav');
+            const buttons = nav.children;
+            
+            for (let i = 0; i < buttons.length; i++) {
+                const btn = buttons[i];
+                
+                if (i === currentQuestionIndex) {
+                    btn.className = 'w-8 h-8 rounded text-sm font-medium bg-blue-500 text-white hover:bg-blue-600 transition-all transform hover:scale-110 cursor-pointer';
+                } else if (selectedAnswers[i]) {
+                    if (markedForReview.has(i)) {
+                        btn.className = 'w-8 h-8 rounded text-sm font-medium bg-yellow-500 text-white hover:bg-yellow-600 transition-all transform hover:scale-110 cursor-pointer';
+                    } else {
+                        btn.className = 'w-8 h-8 rounded text-sm font-medium bg-green-500 text-white hover:bg-green-600 transition-all transform hover:scale-110 cursor-pointer';
+                    }
+                } else if (markedForReview.has(i)) {
+                    btn.className = 'w-8 h-8 rounded text-sm font-medium bg-yellow-500 text-white hover:bg-yellow-600 transition-all transform hover:scale-110 cursor-pointer';
+                } else {
+                    btn.className = 'w-8 h-8 rounded text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-all transform hover:scale-110 cursor-pointer';
+                }
+            }
+        }
+
+        // Load current question
+        function loadQuestion() {
+            if (currentQuestionIndex >= currentTestQuestions.length) return;
+            
+            const question = currentTestQuestions[currentQuestionIndex];
+            
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const letter = String.fromCharCode(65 + index);
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-4 border-2 border-gray-200 rounded-lg';
+                btn.innerHTML = `<span class="font-medium text-blue-600">${letter})</span> ${option}`;
+                btn.onclick = () => selectOption(btn, letter);
+                container.appendChild(btn);
+            });
+            
+            // Restore selected answer
+            if (selectedAnswers[currentQuestionIndex]) {
+                const selectedBtn = container.children[selectedAnswers[currentQuestionIndex].charCodeAt(0) - 65];
+                if (selectedBtn) selectedBtn.classList.add('selected');
+            }
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            document.getElementById('nextBtn').textContent = currentQuestionIndex === totalQuestions - 1 ? 'Finish' : 'Next';
+            
+            // Update progress
+            const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            updateQuestionNavigation();
+        }
+
+        // Select an option
+        function selectOption(btn, letter) {
+            // Remove previous selection
+            const container = document.getElementById('optionsContainer');
+            Array.from(container.children).forEach(child => {
+                child.classList.remove('selected');
+            });
+            
+            // Add selection to clicked button
+            btn.classList.add('selected');
+            selectedAnswers[currentQuestionIndex] = letter;
+            
+            updateQuestionNavigation();
+        }
+
+        // Go to specific question
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            loadQuestion();
+        }
+
+        // Previous question
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        // Next question
+        function nextQuestion() {
+            if (currentQuestionIndex < totalQuestions - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                submitTest();
+            }
+        }
+
+        // Clear answer for current question
+        function clearAnswer() {
+            // Remove answer from selectedAnswers
+            delete selectedAnswers[currentQuestionIndex];
+            
+            // Clear visual selection from options
+            const container = document.getElementById('optionsContainer');
+            Array.from(container.children).forEach(child => {
+                child.classList.remove('selected');
+            });
+            
+            // Update navigation to reflect the change
+            updateQuestionNavigation();
+        }
+
+        // Mark for review
+        function markForReview() {
+            if (markedForReview.has(currentQuestionIndex)) {
+                markedForReview.delete(currentQuestionIndex);
+            } else {
+                markedForReview.add(currentQuestionIndex);
+            }
+            updateQuestionNavigation();
+        }
+
+        // Start timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                
+                document.getElementById('timeRemaining').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeRemaining <= 0) {
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        // Stop timer
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+        }
+
+        // Submit test
+        function submitTest() {
+            stopTimer();
+            
+            // Disable test security
+            disableTestSecurity();
+            
+            // Calculate results with NEET marking scheme
+            let correct = 0;
+            let incorrect = 0;
+            const answered = Object.keys(selectedAnswers).length;
+            const unanswered = totalQuestions - answered;
+            
+            // Check answers and track wrong ones
+            for (let i = 0; i < currentTestQuestions.length; i++) {
+                if (selectedAnswers[i]) {
+                    if (selectedAnswers[i] === currentTestQuestions[i].correct) {
+                        correct++;
+                    } else {
+                        incorrect++;
+                        // Add wrong answer to pickup pool
+                        wrongAnswerQuestions.push({
+                            subject: currentSubject,
+                            chapter: currentChapter,
+                            question: currentTestQuestions[i],
+                            userAnswer: selectedAnswers[i],
+                            correctAnswer: currentTestQuestions[i].correct,
+                            timestamp: new Date()
+                        });
+                    }
+                }
+            }
+            
+            // NEET Marking Scheme: +4 for correct, -1 for wrong, 0 for unanswered
+            const positiveMarks = correct * 4;
+            const negativeMarks = incorrect * 1;
+            const netMarks = positiveMarks - negativeMarks;
+            const maxPossibleMarks = totalQuestions * 4;
+            const percentage = maxPossibleMarks > 0 ? (netMarks / maxPossibleMarks) * 100 : 0;
+            
+            // Store test result
+            const testResult = {
+                subject: currentSubject,
+                chapter: currentChapter,
+                totalQuestions: totalQuestions,
+                correct: correct,
+                incorrect: incorrect,
+                unanswered: unanswered,
+                positiveMarks: positiveMarks,
+                negativeMarks: negativeMarks,
+                netMarks: netMarks,
+                maxPossibleMarks: maxPossibleMarks,
+                percentage: percentage,
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString(),
+                timestamp: Date.now(),
+                answers: selectedAnswers,
+                questions: currentTestQuestions
+            };
+            
+            testResults.push(testResult);
+            
+            // Update today's test data
+            updateTodayTestData(testResult);
+            
+            // Update highest marks record
+            updateHighestMarks(testResult);
+            
+            // Update recent tests (keep only 3)
+            updateRecentTests(testResult);
+            
+            // Track performance improvement
+            trackPerformanceImprovement(testResult);
+            
+            // IMMEDIATELY save all data after test completion
+            savePersistentData();
+            console.log('Test data saved immediately after completion');
+            
+            // Update UI with marks instead of percentage
+            document.getElementById('finalScore').textContent = netMarks + '/' + maxPossibleMarks;
+            document.getElementById('correctAnswers').textContent = correct + ' (+' + positiveMarks + ')';
+            document.getElementById('incorrectAnswers').textContent = incorrect + ' (-' + negativeMarks + ')';
+            document.getElementById('unanswered').textContent = unanswered + ' (0)';
+            
+            // Show results section briefly, then auto-redirect to results page
+            hideAllSections();
+            document.getElementById('resultsSection').classList.remove('hidden');
+            
+            // Update dashboard statistics
+            updateDashboardStats();
+            
+            // Update recent test history
+            updateRecentTestHistory();
+            
+            // Update study streak
+            updateStudyStreak();
+            
+            // Save data again after all updates
+            savePersistentData();
+            
+            // Start countdown timer for redirect to results page
+            let redirectCountdown = 5;
+            const countdownElement = document.getElementById('redirectCountdown');
+            
+            const countdownInterval = setInterval(() => {
+                redirectCountdown--;
+                if (countdownElement) {
+                    countdownElement.textContent = redirectCountdown;
+                }
+                
+                if (redirectCountdown <= 0) {
+                    clearInterval(countdownInterval);
+                    showResults(); // Redirect to results page instead of dashboard
+                }
+            }, 1000);
+        }
+
+        // Track performance improvement
+        function trackPerformanceImprovement(testResult) {
+            const key = `${testResult.subject}_${testResult.chapter}`;
+            
+            if (!performanceHistory[key]) {
+                performanceHistory[key] = [];
+            }
+            
+            performanceHistory[key].push({
+                netMarks: testResult.netMarks,
+                maxMarks: testResult.maxPossibleMarks,
+                accuracy: testResult.correct / testResult.totalQuestions,
+                timestamp: testResult.timestamp
+            });
+            
+            // Keep only last 10 attempts for each chapter
+            if (performanceHistory[key].length > 10) {
+                performanceHistory[key] = performanceHistory[key].slice(-10);
+            }
+        }
+
+        // Update improvement tracking display
+        function updateImprovementTracking() {
+            const container = document.getElementById('improvementTracking');
+            container.innerHTML = '';
+            
+            const improvements = [];
+            
+            // Calculate improvements for each subject-chapter combination
+            Object.keys(performanceHistory).forEach(key => {
+                const history = performanceHistory[key];
+                if (history.length >= 2) {
+                    const recent = history.slice(-3); // Last 3 attempts
+                    const older = history.slice(0, -3); // Earlier attempts
+                    
+                    if (older.length > 0) {
+                        const recentAvg = recent.reduce((sum, test) => sum + test.accuracy, 0) / recent.length;
+                        const olderAvg = older.reduce((sum, test) => sum + test.accuracy, 0) / older.length;
+                        const improvement = ((recentAvg - olderAvg) * 100).toFixed(1);
+                        
+                        if (improvement > 0) {
+                            const [subject, chapter] = key.split('_');
+                            improvements.push({
+                                subject,
+                                chapter: chapter.replace(/_/g, ' '),
+                                improvement: parseFloat(improvement),
+                                recentScore: recent[recent.length - 1].netMarks,
+                                maxScore: recent[recent.length - 1].maxMarks
+                            });
+                        }
+                    }
+                }
+            });
+            
+            // Sort by improvement percentage
+            improvements.sort((a, b) => b.improvement - a.improvement);
+            
+            // Display top 4 improvements
+            improvements.slice(0, 4).forEach(item => {
+                const improvementCard = document.createElement('div');
+                improvementCard.className = 'bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border border-green-200 improvement-indicator';
+                
+                const subjectColors = {
+                    physics: 'blue',
+                    chemistry: 'green',
+                    math: 'purple',
+                    biology: 'red'
+                };
+                
+                improvementCard.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="bg-${subjectColors[item.subject]}-100 px-2 py-1 rounded text-xs font-medium text-${subjectColors[item.subject]}-800">
+                            ${item.subject.charAt(0).toUpperCase() + item.subject.slice(1)}
+                        </div>
+                        <div class="text-green-600 font-bold text-lg">+${item.improvement}%</div>
+                    </div>
+                    <h4 class="font-semibold text-gray-800 text-sm mb-1">${item.chapter}</h4>
+                    <p class="text-xs text-gray-600">Latest: ${item.recentScore}/${item.maxScore}</p>
+                    <div class="mt-2 flex items-center text-xs text-green-600">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        Improving!
+                    </div>
+                `;
+                
+                container.appendChild(improvementCard);
+            });
+            
+            if (improvements.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-8 text-gray-500">
+                        <p>Take more tests to see your improvements!</p>
+                        <p class="text-sm mt-2">Complete at least 2 tests in the same chapter to track progress.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Update dashboard statistics with real data
+        function updateDashboardStats() {
+            if (testResults.length === 0) {
+                // Reset all stats to 0 if no tests completed
+                document.getElementById('dashboardTestsCompleted').textContent = '0';
+                document.getElementById('dashboardAverageMarks').textContent = '0';
+                document.getElementById('dashboardBestMarks').textContent = '0';
+                document.getElementById('dashboardLowestMarks').textContent = '0';
+                document.getElementById('dashboardTotalQuestions').textContent = '0';
+                document.getElementById('dashboardUnattempted').textContent = '0';
+                document.getElementById('dashboardCorrectAnswers').textContent = '0';
+                document.getElementById('dashboardWrongAnswers').textContent = '0';
+                document.getElementById('dashboardWeeklyTests').textContent = '0';
+                document.getElementById('dashboardAccuracy').textContent = '0%';
+                document.getElementById('dashboardNegativeMarks').textContent = '0';
+                document.getElementById('dashboardMonthlyTests').textContent = '0';
+                return;
+            }
+            
+            // Calculate cumulative statistics
+            let totalTests = testResults.length;
+            let totalQuestions = 0;
+            let totalCorrect = 0;
+            let totalIncorrect = 0;
+            let totalUnanswered = 0;
+            let totalPositiveMarks = 0;
+            let totalNegativeMarks = 0;
+            let totalNetMarks = 0;
+            let bestMarks = -Infinity;
+            let lowestMarks = Infinity;
+            
+            // Calculate weekly and monthly tests
+            const now = new Date();
+            const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            
+            let weeklyTests = 0;
+            let monthlyTests = 0;
+            
+            testResults.forEach(result => {
+                totalQuestions += result.totalQuestions;
+                totalCorrect += result.correct;
+                totalIncorrect += result.incorrect;
+                totalUnanswered += result.unanswered;
+                totalPositiveMarks += result.positiveMarks;
+                totalNegativeMarks += result.negativeMarks;
+                totalNetMarks += result.netMarks;
+                
+                if (result.netMarks > bestMarks) bestMarks = result.netMarks;
+                if (result.netMarks < lowestMarks) lowestMarks = result.netMarks;
+                
+                // Count weekly and monthly tests
+                const testDate = new Date(result.timestamp || Date.parse(result.date));
+                if (testDate >= oneWeekAgo) weeklyTests++;
+                if (testDate >= oneMonthAgo) monthlyTests++;
+            });
+            
+            // Calculate averages and percentages
+            const averageMarks = totalTests > 0 ? Math.round(totalNetMarks / totalTests) : 0;
+            const accuracyRate = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+            
+            // Update dashboard elements
+            document.getElementById('dashboardTestsCompleted').textContent = totalTests;
+            document.getElementById('dashboardAverageMarks').textContent = averageMarks;
+            document.getElementById('dashboardBestMarks').textContent = bestMarks === -Infinity ? '0' : bestMarks;
+            document.getElementById('dashboardLowestMarks').textContent = lowestMarks === Infinity ? '0' : lowestMarks;
+            document.getElementById('dashboardTotalQuestions').textContent = totalQuestions;
+            document.getElementById('dashboardUnattempted').textContent = totalUnanswered;
+            document.getElementById('dashboardCorrectAnswers').textContent = totalCorrect;
+            document.getElementById('dashboardWrongAnswers').textContent = totalIncorrect;
+            document.getElementById('dashboardWeeklyTests').textContent = weeklyTests;
+            document.getElementById('dashboardAccuracy').textContent = accuracyRate + '%';
+            document.getElementById('dashboardNegativeMarks').textContent = totalNegativeMarks;
+            document.getElementById('dashboardMonthlyTests').textContent = monthlyTests;
+        }
+
+        // Update recent test history
+        function updateRecentTestHistory() {
+            const historyContainer = document.getElementById('recentTestHistory');
+            historyContainer.innerHTML = '';
+            
+            if (recentTests.length === 0) {
+                historyContainer.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <p>No tests completed yet. Start your first test!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Always show today's summary card (even if no tests completed today)
+            const todayCard = document.createElement('div');
+            todayCard.className = 'bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-6 mb-4';
+            
+            // Ensure we have current day's data
+            checkAndResetTodayData();
+            
+            const todayDate = new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            if (todayTest.testsCompleted > 0) {
+                todayCard.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-blue-800 text-lg">📅 Today's Performance</h3>
+                                <p class="text-sm text-blue-600">${todayDate}</p>
+                                <p class="text-sm text-blue-600">${todayTest.testsCompleted} test${todayTest.testsCompleted > 1 ? 's' : ''} completed • ${todayTest.accuracy}% accuracy</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-blue-700">${todayTest.totalScore}</p>
+                            <p class="text-sm text-blue-600">${todayTest.totalCorrect}/${todayTest.totalQuestions}</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                todayCard.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-blue-800 text-lg">📅 Today's Performance</h3>
+                                <p class="text-sm text-blue-600">${todayDate}</p>
+                                <p class="text-sm text-blue-600">No tests completed today yet</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-gray-400">0</p>
+                            <p class="text-sm text-gray-400">0/0</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            historyContainer.appendChild(todayCard);
+            
+            // Add highest marks card if available
+            if (highestMarks.score > 0) {
+                const highestCard = document.createElement('div');
+                highestCard.className = 'bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-lg p-6 mb-4';
+                
+                highestCard.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-yellow-100 p-3 rounded-full">
+                                <svg class="w-6 h-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-yellow-800 text-lg">🏆 Personal Best</h3>
+                                <p class="text-sm text-yellow-600">${highestMarks.subject.charAt(0).toUpperCase() + highestMarks.subject.slice(1)} - ${highestMarks.chapter}</p>
+                                <p class="text-xs text-yellow-600">${highestMarks.date}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-yellow-700">${highestMarks.score}/${highestMarks.maxPossible}</p>
+                            <p class="text-sm text-yellow-600">${highestMarks.percentage}%</p>
+                        </div>
+                    </div>
+                `;
+                
+                historyContainer.appendChild(highestCard);
+            }
+            
+            // Add section header for recent tests
+            const sectionHeader = document.createElement('div');
+            sectionHeader.className = 'mb-4';
+            sectionHeader.innerHTML = `
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">📋 Recent Tests (Last 3)</h3>
+            `;
+            historyContainer.appendChild(sectionHeader);
+            
+            // Show only 3 most recent tests
+            recentTests.forEach(result => {
+                const testCard = document.createElement('div');
+                testCard.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors mb-2';
+                
+                const subjectColor = {
+                    physics: 'blue',
+                    chemistry: 'green',
+                    math: 'purple',
+                    biology: 'red'
+                }[result.subject] || 'gray';
+                
+                // Determine color based on net marks performance
+                const performanceColor = result.netMarks >= (result.maxPossibleMarks * 0.7) ? 'green' : 
+                                       result.netMarks >= (result.maxPossibleMarks * 0.5) ? 'yellow' : 'red';
+                
+                testCard.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-${subjectColor}-100 p-2 rounded-full">
+                            <svg class="w-5 h-5 text-${subjectColor}-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">${result.subject.charAt(0).toUpperCase() + result.subject.slice(1)} - ${result.chapter}</h3>
+                            <p class="text-sm text-gray-600">${result.date} • ${result.totalQuestions} Questions</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-lg font-bold text-${performanceColor}-600">${result.netMarks}/${result.maxPossibleMarks}</p>
+                        <p class="text-sm text-gray-600">${result.correct}C • ${result.incorrect}W • ${result.unanswered}U</p>
+                    </div>
+                `;
+                
+                historyContainer.appendChild(testCard);
+            });
+        }
+
+        // Download answer sheet as PDF
+        function downloadAnswerSheet() {
+            if (testResults.length === 0) return;
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const latestResult = testResults[testResults.length - 1];
+            const percentage = Math.round((latestResult.netMarks / latestResult.maxPossibleMarks) * 100);
+            
+            // Header with logo area
+            doc.setFillColor(102, 126, 234);
+            doc.rect(0, 0, 210, 35, 'F');
+            
+            // Title in white
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(24);
+            doc.setFont(undefined, 'bold');
+            doc.text('NEET TEST SERIES', 20, 20);
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.text('Answer Sheet & Performance Analysis', 20, 28);
+            
+            // Reset color
+            doc.setTextColor(0, 0, 0);
+            
+            // Test Information Box
+            doc.setFillColor(248, 250, 252);
+            doc.rect(15, 45, 180, 35, 'F');
+            doc.setDrawColor(226, 232, 240);
+            doc.rect(15, 45, 180, 35, 'S');
+            
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('TEST INFORMATION', 20, 55);
+            
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Subject: ${latestResult.subject.charAt(0).toUpperCase() + latestResult.subject.slice(1)}`, 20, 65);
+            doc.text(`Chapter: ${latestResult.chapter}`, 105, 65);
+            doc.text(`Date: ${latestResult.date}`, 20, 72);
+            doc.text(`Time: ${latestResult.time}`, 105, 72);
+            
+            // Performance Summary Box
+            doc.setFillColor(236, 254, 255);
+            doc.rect(15, 90, 180, 45, 'F');
+            doc.setDrawColor(34, 211, 238);
+            doc.rect(15, 90, 180, 45, 'S');
+            
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('PERFORMANCE SUMMARY', 20, 100);
+            
+            // Score display
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            if (percentage >= 70) doc.setTextColor(34, 197, 94); // Green
+            else if (percentage >= 50) doc.setTextColor(251, 191, 36); // Yellow
+            else doc.setTextColor(239, 68, 68); // Red
+            
+            doc.text(`${latestResult.netMarks}/${latestResult.maxPossibleMarks}`, 20, 115);
+            doc.setFontSize(14);
+            doc.text(`(${percentage}%)`, 70, 115);
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            
+            // Detailed breakdown
+            doc.text(`✓ Correct: ${latestResult.correct} questions (+${latestResult.positiveMarks} marks)`, 20, 125);
+            doc.text(`✗ Incorrect: ${latestResult.incorrect} questions (-${latestResult.negativeMarks} marks)`, 105, 125);
+            doc.text(`— Unanswered: ${latestResult.unanswered} questions (0 marks)`, 20, 132);
+            
+            let yPosition = 150;
+            
+            // Questions section
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('DETAILED QUESTION ANALYSIS', 20, yPosition);
+            yPosition += 15;
+            
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            
+            latestResult.questions.forEach((question, index) => {
+                // Check if we need a new page
+                if (yPosition > 250) {
+                    doc.addPage();
+                    yPosition = 20;
+                }
+                
+                const userAnswer = latestResult.answers[index];
+                const correctAnswer = question.correct;
+                const isCorrect = userAnswer === correctAnswer;
+                const isAnswered = userAnswer !== undefined;
+                
+                // Question header with status
+                doc.setFillColor(249, 250, 251);
+                doc.rect(15, yPosition - 5, 180, 8, 'F');
+                
+                doc.setFont(undefined, 'bold');
+                doc.setFontSize(12);
+                doc.text(`Question ${index + 1}`, 20, yPosition);
+                
+                // Status indicator
+                if (!isAnswered) {
+                    doc.setTextColor(107, 114, 128);
+                    doc.text('NOT ANSWERED', 150, yPosition);
+                } else if (isCorrect) {
+                    doc.setTextColor(34, 197, 94);
+                    doc.text('CORRECT ✓', 150, yPosition);
+                } else {
+                    doc.setTextColor(239, 68, 68);
+                    doc.text('INCORRECT ✗', 150, yPosition);
+                }
+                
+                doc.setTextColor(0, 0, 0);
+                yPosition += 10;
+                
+                // Question text
+                doc.setFont(undefined, 'normal');
+                doc.setFontSize(10);
+                const questionLines = doc.splitTextToSize(question.question, 170);
+                doc.text(questionLines, 20, yPosition);
+                yPosition += questionLines.length * 4 + 5;
+                
+                // Options with color coding
+                question.options.forEach((option, optIndex) => {
+                    const letter = String.fromCharCode(65 + optIndex);
+                    const isThisCorrect = letter === correctAnswer;
+                    const isThisSelected = letter === userAnswer;
+                    
+                    let prefix = `${letter}) `;
+                    
+                    if (isThisSelected && isThisCorrect) {
+                        doc.setTextColor(34, 197, 94); // Green for correct selection
+                        prefix = `${letter}) ✓ `;
+                    } else if (isThisSelected && !isThisCorrect) {
+                        doc.setTextColor(239, 68, 68); // Red for wrong selection
+                        prefix = `${letter}) ✗ `;
+                    } else if (isThisCorrect) {
+                        doc.setTextColor(34, 197, 94); // Green for correct answer
+                        prefix = `${letter}) ✓ `;
+                    } else {
+                        doc.setTextColor(107, 114, 128); // Gray for other options
+                    }
+                    
+                    const optionLines = doc.splitTextToSize(prefix + option, 165);
+                    doc.text(optionLines, 25, yPosition);
+                    yPosition += optionLines.length * 4;
+                    
+                    doc.setTextColor(0, 0, 0); // Reset color
+                });
+                
+                yPosition += 3;
+                
+                // Explanation box
+                doc.setFillColor(254, 249, 195);
+                const explanationLines = doc.splitTextToSize(question.explanation, 165);
+                const boxHeight = explanationLines.length * 4 + 8;
+                doc.rect(20, yPosition - 2, 170, boxHeight, 'F');
+                
+                doc.setFont(undefined, 'bold');
+                doc.text('Explanation:', 25, yPosition + 3);
+                doc.setFont(undefined, 'normal');
+                doc.text(explanationLines, 25, yPosition + 8);
+                yPosition += boxHeight + 8;
+            });
+            
+            // Footer
+            doc.setFontSize(8);
+            doc.setTextColor(107, 114, 128);
+            doc.text(`Generated on ${new Date().toLocaleString()}`, 20, 285);
+            doc.text('NEET Test Series - Master Your Medical Entrance', 120, 285);
+            
+            // Save the PDF
+            const fileName = `NEET_${latestResult.subject}_${latestResult.chapter}_${latestResult.date.replace(/\//g, '-')}.pdf`;
+            doc.save(fileName);
+        }
+
+        // Update study streak
+        function updateStudyStreak() {
+            const today = new Date().toDateString();
+            const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toDateString();
+            
+            console.log('Updating study streak. Today:', today, 'Last test date:', studyStreak.lastTestDate);
+            
+            // If this is the first test today
+            if (studyStreak.lastTestDate !== today) {
+                // Check if yesterday was the last test date (consecutive days)
+                if (studyStreak.lastTestDate === yesterday) {
+                    studyStreak.currentStreak++;
+                    console.log('Consecutive day! Streak increased to:', studyStreak.currentStreak);
+                } else if (studyStreak.lastTestDate === null) {
+                    // First test ever
+                    studyStreak.currentStreak = 1;
+                    console.log('First test ever! Streak set to 1');
+                } else {
+                    // There's a gap, reset streak
+                    studyStreak.currentStreak = 1;
+                    console.log('Gap detected! Streak reset to 1');
+                }
+                
+                studyStreak.lastTestDate = today;
+                studyStreak.streakDates.push(today);
+                
+                // Keep only last 30 days of streak dates
+                if (studyStreak.streakDates.length > 30) {
+                    studyStreak.streakDates = studyStreak.streakDates.slice(-30);
+                }
+                
+                // Update longest streak
+                if (studyStreak.currentStreak > studyStreak.longestStreak) {
+                    studyStreak.longestStreak = studyStreak.currentStreak;
+                }
+                
+                // Show congratulation modal on 22nd day (after completing 21 days)
+                if (studyStreak.currentStreak === 22 && !studyStreak.congratulationShown) {
+                    studyStreak.congratulationShown = true;
+                    setTimeout(() => {
+                        document.getElementById('streakCongratulationModal').classList.add('show');
+                    }, 2000); // Show after 2 seconds
+                }
+                
+                console.log('Study streak updated:', studyStreak);
+                updateStudyStreakDisplay();
+                savePersistentData(); // Save immediately after updating streak
+            } else {
+                console.log('Already tested today, streak unchanged');
+            }
+        }
+
+        // Check and update streak on page load
+        function checkStreakOnLoad() {
+            const today = new Date().toDateString();
+            const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toDateString();
+            
+            // If there's a last test date, check if streak should be reset
+            if (studyStreak.lastTestDate) {
+                // If last test was not today or yesterday, check the gap
+                if (studyStreak.lastTestDate !== today && studyStreak.lastTestDate !== yesterday) {
+                    const lastTestDate = new Date(studyStreak.lastTestDate);
+                    const currentDate = new Date();
+                    const daysDifference = Math.floor((currentDate - lastTestDate) / (1000 * 60 * 60 * 24));
+                    
+                    // Reset streak if gap is more than 1 day
+                    if (daysDifference > 1) {
+                        studyStreak.currentStreak = 0;
+                        studyStreak.congratulationShown = false;
+                        console.log('Study streak reset due to gap of', daysDifference, 'days');
+                        savePersistentData();
+                    }
+                }
+            }
+            
+            updateStudyStreakDisplay();
+        }
+
+        // Update study streak display
+        function updateStudyStreakDisplay() {
+            const streakDaysElement = document.getElementById('streakDays');
+            const streakFireElement = document.getElementById('streakFire');
+            
+            if (streakDaysElement) {
+                streakDaysElement.textContent = studyStreak.currentStreak;
+            }
+            
+            // Show fire emoji only if streak is active
+            if (streakFireElement) {
+                if (studyStreak.currentStreak > 0) {
+                    streakFireElement.style.display = 'inline';
+                    // Add more fire emojis for longer streaks
+                    if (studyStreak.currentStreak >= 21) {
+                        streakFireElement.textContent = '🔥🔥🔥';
+                    } else if (studyStreak.currentStreak >= 7) {
+                        streakFireElement.textContent = '🔥🔥';
+                    } else {
+                        streakFireElement.textContent = '🔥';
+                    }
+                } else {
+                    streakFireElement.style.display = 'none';
+                }
+            }
+        }
+
+        // Close streak congratulation modal
+        function closeStreakModal() {
+            document.getElementById('streakCongratulationModal').classList.remove('show');
+        }
+
+        // Setup results page filters
+        function setupResultsFilters() {
+            const subjectFilter = document.getElementById('subjectFilter');
+            const sortFilter = document.getElementById('sortFilter');
+            
+            // Remove existing event listeners
+            subjectFilter.removeEventListener('change', loadResultsPage);
+            sortFilter.removeEventListener('change', loadResultsPage);
+            
+            // Add event listeners
+            subjectFilter.addEventListener('change', loadResultsPage);
+            sortFilter.addEventListener('change', loadResultsPage);
+        }
+
+        // Load and display results page
+        function loadResultsPage() {
+            const subjectFilter = document.getElementById('subjectFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+            
+            // Filter results
+            filteredResults = testResults.filter(result => {
+                if (subjectFilter && result.subject !== subjectFilter) {
+                    return false;
+                }
+                return true;
+            });
+            
+            // Sort results
+            filteredResults.sort((a, b) => {
+                switch (sortFilter) {
+                    case 'newest':
+                        return b.timestamp - a.timestamp;
+                    case 'oldest':
+                        return a.timestamp - b.timestamp;
+                    case 'highest':
+                        return b.netMarks - a.netMarks;
+                    case 'lowest':
+                        return a.netMarks - b.netMarks;
+                    default:
+                        return b.timestamp - a.timestamp;
+                }
+            });
+            
+            // Update results count
+            document.getElementById('resultsCount').textContent = 
+                `Showing ${filteredResults.length} result${filteredResults.length !== 1 ? 's' : ''}`;
+            
+            // Display current page results
+            displayResultsPage();
+            
+            // Update pagination
+            updateResultsPagination();
+        }
+
+        // Display results for current page
+        function displayResultsPage() {
+            const resultsList = document.getElementById('resultsList');
+            resultsList.innerHTML = '';
+            
+            if (filteredResults.length === 0) {
+                resultsList.innerHTML = `
+                    <div class="text-center py-12 text-gray-500">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No test results found</h3>
+                        <p class="text-gray-500">Complete some tests to see your results here.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const startIndex = (currentResultsPage - 1) * resultsPerPage;
+            const endIndex = Math.min(startIndex + resultsPerPage, filteredResults.length);
+            const pageResults = filteredResults.slice(startIndex, endIndex);
+            
+            pageResults.forEach((result, index) => {
+                const resultCard = document.createElement('div');
+                resultCard.className = 'bg-gray-50 rounded-lg p-6 hover:bg-gray-100 transition-colors';
+                
+                const subjectColor = {
+                    physics: 'blue',
+                    chemistry: 'green',
+                    math: 'purple',
+                    biology: 'red'
+                }[result.subject] || 'gray';
+                
+                const performanceColor = result.netMarks >= (result.maxPossibleMarks * 0.7) ? 'green' : 
+                                       result.netMarks >= (result.maxPossibleMarks * 0.5) ? 'yellow' : 'red';
+                
+                const percentage = result.maxPossibleMarks > 0 ? 
+                    Math.round((result.netMarks / result.maxPossibleMarks) * 100) : 0;
+                
+                resultCard.innerHTML = `
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                        <div class="flex items-start space-x-4 mb-4 md:mb-0">
+                            <div class="bg-${subjectColor}-100 p-3 rounded-full">
+                                <svg class="w-6 h-6 text-${subjectColor}-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">
+                                    ${result.subject.charAt(0).toUpperCase() + result.subject.slice(1)} - ${result.chapter}
+                                </h3>
+                                <p class="text-sm text-gray-600 mb-2">
+                                    ${result.date} at ${result.time} • ${result.totalQuestions} Questions
+                                </p>
+                                <div class="flex items-center space-x-4 text-sm">
+                                    <span class="text-green-600 font-medium">✓ ${result.correct} Correct</span>
+                                    <span class="text-red-600 font-medium">✗ ${result.incorrect} Wrong</span>
+                                    <span class="text-gray-600 font-medium">— ${result.unanswered} Unanswered</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-${performanceColor}-600 mb-1">
+                                ${result.netMarks}/${result.maxPossibleMarks}
+                            </div>
+                            <div class="text-sm text-gray-600 mb-2">${percentage}%</div>
+                            <div class="text-xs text-gray-500">
+                                +${result.positiveMarks} | -${result.negativeMarks}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="mt-4">
+                        <div class="bg-gray-200 rounded-full h-2">
+                            <div class="bg-${performanceColor}-500 h-2 rounded-full transition-all duration-500" 
+                                 style="width: ${Math.max(0, percentage)}%"></div>
+                        </div>
+                    </div>
+                `;
+                
+                resultsList.appendChild(resultCard);
+            });
+        }
+
+        // Update pagination controls
+        function updateResultsPagination() {
+            const pagination = document.getElementById('resultsPagination');
+            pagination.innerHTML = '';
+            
+            if (filteredResults.length === 0) return;
+            
+            const totalPages = Math.ceil(filteredResults.length / resultsPerPage);
+            
+            if (totalPages <= 1) return;
+            
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.className = `px-4 py-2 rounded-lg font-medium transition-colors ${
+                currentResultsPage === 1 
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`;
+            prevBtn.textContent = 'Previous';
+            prevBtn.disabled = currentResultsPage === 1;
+            prevBtn.onclick = () => {
+                if (currentResultsPage > 1) {
+                    currentResultsPage--;
+                    displayResultsPage();
+                    updateResultsPagination();
+                }
+            };
+            pagination.appendChild(prevBtn);
+            
+            // Page numbers
+            const startPage = Math.max(1, currentResultsPage - 2);
+            const endPage = Math.min(totalPages, currentResultsPage + 2);
+            
+            if (startPage > 1) {
+                const firstBtn = document.createElement('button');
+                firstBtn.className = 'px-4 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors';
+                firstBtn.textContent = '1';
+                firstBtn.onclick = () => goToResultsPage(1);
+                pagination.appendChild(firstBtn);
+                
+                if (startPage > 2) {
+                    const dots = document.createElement('span');
+                    dots.className = 'px-2 text-gray-500';
+                    dots.textContent = '...';
+                    pagination.appendChild(dots);
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `px-4 py-2 rounded-lg font-medium transition-colors ${
+                    i === currentResultsPage 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`;
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => goToResultsPage(i);
+                pagination.appendChild(pageBtn);
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const dots = document.createElement('span');
+                    dots.className = 'px-2 text-gray-500';
+                    dots.textContent = '...';
+                    pagination.appendChild(dots);
+                }
+                
+                const lastBtn = document.createElement('button');
+                lastBtn.className = 'px-4 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors';
+                lastBtn.textContent = totalPages;
+                lastBtn.onclick = () => goToResultsPage(totalPages);
+                pagination.appendChild(lastBtn);
+            }
+            
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.className = `px-4 py-2 rounded-lg font-medium transition-colors ${
+                currentResultsPage === totalPages 
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`;
+            nextBtn.textContent = 'Next';
+            nextBtn.disabled = currentResultsPage === totalPages;
+            nextBtn.onclick = () => {
+                if (currentResultsPage < totalPages) {
+                    currentResultsPage++;
+                    displayResultsPage();
+                    updateResultsPagination();
+                }
+            };
+            pagination.appendChild(nextBtn);
+            
+            // Page info
+            const pageInfo = document.createElement('div');
+            pageInfo.className = 'text-sm text-gray-600 ml-4';
+            pageInfo.textContent = `Page ${currentResultsPage} of ${totalPages}`;
+            pagination.appendChild(pageInfo);
+        }
+
+        // Go to specific results page
+        function goToResultsPage(page) {
+            currentResultsPage = page;
+            displayResultsPage();
+            updateResultsPagination();
+        }
+
+        // Initialize the app
+        init();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9673bd633597343c',t:'MTc1Mzg2NjgwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
